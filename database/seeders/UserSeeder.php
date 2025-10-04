@@ -15,33 +15,33 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $support = User::updateOrCreate(
-            ['email' => 'support@base-laravel.com'],
+            ['email' => 'support@seed-iq.com'],
             [
                 'external_id' => Str::uuid()->toString(),
                 'name' => 'Seed IQ - Suporte',
-                'password' => bcrypt('support@base-laravel.com'),
+                'password' => bcrypt('support@seed-iq.com'),
                 'email_verified_at' => now(),
             ]
         );
         $support->assignRole([ActiveRoleUserEnum::SUPPORT]);
 
         $admin = User::updateOrCreate(
-            ['email' => 'adm@base-laravel.com'],
+            ['email' => 'adm@seed-iq.com'],
             [
                 'external_id' => Str::uuid()->toString(),
                 'name' => 'Seed IQ - Admin',
-                'password' => bcrypt('adm@base-laravel.com'),
+                'password' => bcrypt('adm@seed-iq.com'),
                 'email_verified_at' => now(),
             ]
         );
         $admin->assignRole([ActiveRoleUserEnum::ADMIN]);
 
         $client = User::updateOrCreate(
-            ['email' => 'client@base-laravel.com'],
+            ['email' => 'client@seed_iq.com'],
             [
                 'external_id' => Str::uuid()->toString(),
                 'name' => 'Seed IQ - Client',
-                'password' => bcrypt('client@base-laravel.com'),
+                'password' => bcrypt('client@seed-iq.com'),
                 'email_verified_at' => now(),
             ]
         );

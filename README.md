@@ -22,8 +22,8 @@ Siga os passos abaixo para configurar e iniciar o projeto:
 
 1️⃣ **Clone o repositório:**
 ```sh
-git clone https://github.com/piedro404/base-laravel.git
-cd base-laravel
+git clone https://github.com/piedro404/seed_iq.git
+cd seed_iq
 ```
 
 2️⃣ **Execute o script de configuração inicial:**

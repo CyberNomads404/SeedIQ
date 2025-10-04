@@ -8,6 +8,6 @@ return [
 
     'urls' => [
         'front_end_local' => env('APP_URL_FRONTEND_LOCAL', 'http://localhost:3000'),
-        'front_end_production' => env('APP_URL_FRONTEND_PRODUCTION', 'https://base-laravel.vercel.app'),
+        'front_end_production' => env('APP_URL_FRONTEND_PRODUCTION', 'https://seed_iq.vercel.app'),
     ],
 ];
