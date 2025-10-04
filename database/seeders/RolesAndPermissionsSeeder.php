@@ -49,7 +49,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ],
         ]);
 
-        $this->createRoleWithPermissions(ActiveRoleUserEnum::CLIENT->value, [
+        $this->createRoleWithPermissions(ActiveRoleUserEnum::OPERATOR->value, [
             'login' => [
                 [
                     'mobile' => 'Authorization Panel Access',

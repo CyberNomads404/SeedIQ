@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             ['email' => 'support@base-laravel.com'],
             [
                 'external_id' => Str::uuid()->toString(),
-                'name' => 'Base Laravel - Suporte',
+                'name' => 'Seed IQ - Suporte',
                 'password' => bcrypt('support@base-laravel.com'),
                 'email_verified_at' => now(),
             ]
@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
             ['email' => 'adm@base-laravel.com'],
             [
                 'external_id' => Str::uuid()->toString(),
-                'name' => 'Base Laravel - Admin',
+                'name' => 'Seed IQ - Admin',
                 'password' => bcrypt('adm@base-laravel.com'),
                 'email_verified_at' => now(),
             ]
@@ -40,11 +40,11 @@ class UserSeeder extends Seeder
             ['email' => 'client@base-laravel.com'],
             [
                 'external_id' => Str::uuid()->toString(),
-                'name' => 'Base Laravel - Client',
+                'name' => 'Seed IQ - Client',
                 'password' => bcrypt('client@base-laravel.com'),
                 'email_verified_at' => now(),
             ]
         );
-        $client->assignRole([ActiveRoleUserEnum::CLIENT]);
+        $client->assignRole([ActiveRoleUserEnum::OPERATOR]);
     }
 }

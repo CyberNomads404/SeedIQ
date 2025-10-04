@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 import config from './constants/config';
 
-const appName = config.app_name || 'Base Laravel';
+const appName = config.app_name || 'Seed IQ';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

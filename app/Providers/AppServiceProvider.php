@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
 
         VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
             $finalUrl = UrlService::formattedSignedVerifyEmailFrontEndUrl($url, '/auth/verify-email');
-            $projectName = config('app.name', 'Base Laravel');
+            $projectName = config('app.name', 'Seed IQ');
             $logoUrl = config('constants.files.logo_url', 'https://bjjqkcvxfnxrcsxtrsai.supabase.co/storage/v1/object/public/base-images/storage/v1/s3/base-images/base-images/static/logo.png');
 
             return (new MailMessage())
@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
                 $notifiable->id,
                 $token
             );
-            $projectName = config('app.name', 'Base Laravel');
+            $projectName = config('app.name', 'Seed IQ');
             $logoUrl = config('constants.files.logo_url', 'https://bjjqkcvxfnxrcsxtrsai.supabase.co/storage/v1/object/public/base-images/storage/v1/s3/base-images/base-images/static/logo.png');
 
             return (new MailMessage())

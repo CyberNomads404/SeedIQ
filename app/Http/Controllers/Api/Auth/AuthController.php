@@ -22,7 +22,7 @@ use Illuminate\Support\Str;
 class AuthController extends \App\Http\Controllers\Api\AuthController
 {
     protected $model = User::class;
-    protected $roleDefault = ActiveRoleUserEnum::CLIENT;
+    protected $roleDefault = ActiveRoleUserEnum::OPERATOR;
 
     public function register(AuthRequest $request)
     {
