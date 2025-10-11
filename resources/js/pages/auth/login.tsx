@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Checkbox from '@/components/checkbox';
-import imageBackgroud from "@/assets/images/image-backgroud.jpg";
+import imageBackgroud from "@/assets/images/image-backgroud.webp";
 import { cn } from "@/lib/utils";
 import loginFormSchema from "@/schemas/form-login-schema";
 import config from "@/constants/config";
