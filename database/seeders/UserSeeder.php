@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
         $admin->assignRole([ActiveRoleUserEnum::ADMIN]);
 
         $client = User::updateOrCreate(
-            ['email' => 'client@seed_iq.com'],
+            ['email' => 'client@seed-iq.com'],
             [
                 'external_id' => Str::uuid()->toString(),
                 'name' => 'Seed IQ - Client',
