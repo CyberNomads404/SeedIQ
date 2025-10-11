@@ -19,6 +19,9 @@ enum TableNameEnum: string
     case ROLES = 'roles';
     case SESSIONS = 'sessions';
     case USERS = 'users';
+    case CATEGORIES = 'categories';
+    case CLASSIFICATIONS = 'classifications';
+    case CLASSIFICATION_RESULTS = 'classification_results';
 
     /**
      * Retorna a tradução do nome da tabela.
@@ -41,6 +44,9 @@ enum TableNameEnum: string
             self::ROLES => 'Papéis',
             self::SESSIONS => 'Sessões',
             self::USERS => 'Usuários',
+            self::CATEGORIES => 'Categorias',
+            self::CLASSIFICATIONS => 'Classificações',
+            self::CLASSIFICATION_RESULTS => 'Resultados de Classificação',
         };
     }
 
