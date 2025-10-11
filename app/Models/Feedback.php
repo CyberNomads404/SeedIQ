@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Enums\FeedbackTypeEnum;
 
-class Feedback extends BaseModel
+class Feedback extends BaseSoftDeleteModel
 {
     protected $table = 'feedbacks';
     protected $fillable = [
