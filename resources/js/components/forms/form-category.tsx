@@ -65,12 +65,12 @@ export const CategoryFormDialog: React.FC<ICategoryFormDialogProps> = ({
         if (data) {
             form.reset({
                 ...data,
-                role_id: String(data.role_id),
-                active: Boolean(data.active),
-                avatar: String(data.avatar_url) ?? null,
+                icon: data?.icon_url || null,
             });
         }
     }, [data]);
+
+    console.log(data);
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>

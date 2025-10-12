@@ -109,7 +109,7 @@ const getColumns = (
             const onUpdate = () => setIsOpenUpdateForm(!isOpenUpdateForm);
 
             const handleUpdate = (values: z.infer<typeof categoryFormSchema>, external_id?: string) => {
-                router.put(route('categories.update', external_id), values, {
+                router.post(route('categories.update', external_id), {...values, _method: 'PUT'}, {
                     preserveState: true,
                     preserveScroll: true,
                     onSuccess: () => {
