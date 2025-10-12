@@ -31,6 +31,7 @@ import { ICategoryFormDialogProps } from "@/interfaces/ICategory";
 import { usePage } from "@inertiajs/react";
 import { PageProps } from "@/types";
 import AvatarUpload from "../avatar-upload";
+import FileUpload from "../file-upload";
 
 export const CategoryFormDialog: React.FC<ICategoryFormDialogProps> = ({
     data,
@@ -87,12 +88,14 @@ export const CategoryFormDialog: React.FC<ICategoryFormDialogProps> = ({
                 <form onSubmit={form.handleSubmit(handleSubmit)}>
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-1 items-start gap-3">
-                            <AvatarUpload
+                            <FileUpload
                                 value={form.watch("icon") as string}
                                 onChange={(file) => {
                                     form.setValue("icon", file ?? null);
                                 }}
                                 shape="rounded"
+                                accept={[".svg", "image/svg+xml"]}
+                                maxSize={204800} // 200 KB
                             />
                         </div>
                         <div className="grid grid-cols-1 items-start gap-3">
