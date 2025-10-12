@@ -56,6 +56,7 @@ const getColumns = (
     sort: { column: string; direction: "asc" | "desc" },
     onSort: (column: string) => void
 ): ColumnDef<any>[] => [
+    // ...existing code...
     {
         accessorKey: "name",
         header: ({ column }) => {
@@ -77,6 +78,21 @@ const getColumns = (
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     )}
                 </Button>
+            );
+        },
+        cell: ({ row }) => {
+            const category = row.original;
+            return (
+                <div className="flex items-center gap-3">
+                    {category.icon_url ? (
+                        <img src={category.icon_url} alt={category.name} className="w-6 h-6 object-contain rounded" />
+                    ) : (
+                        <div className="w-6 h-6 bg-muted rounded flex items-center justify-center text-sm text-muted-foreground">
+                            <Slash className="w-4 h-4" />
+                        </div>
+                    )}
+                    <span className="font-medium">{category.name}</span>
+                </div>
             );
         },
     },
@@ -353,19 +369,6 @@ export default function Index({ categories, query_params }: ICategoryProps) {
                                                 placeholder="Filtrar por nome..."
                                                 value={filters.name}
                                                 onChange={(e) => setFilters(prev => ({ ...prev, name: e.target.value }))}
-                                                className="mt-1"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <Label htmlFor="filter-icon" className="text-sm font-medium">
-                                                Ícone
-                                            </Label>
-                                            <Input
-                                                id="filter-icon"
-                                                placeholder="Filtrar por ícone..."
-                                                value={filters.icon}
-                                                onChange={(e) => setFilters(prev => ({ ...prev, icon: e.target.value }))}
                                                 className="mt-1"
                                             />
                                         </div>
