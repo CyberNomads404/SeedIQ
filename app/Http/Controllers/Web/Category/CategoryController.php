@@ -35,8 +35,6 @@ class CategoryController extends AuthController
             ->orderBy($sortColumn, $sortDirection)
             ->paginate($perPage);
 
-        dd($categories);
-
         return Inertia::render('auth/painel/category/index', [
             'categories' => $categories,
             'query_params' => request()->all(),
@@ -47,10 +45,11 @@ class CategoryController extends AuthController
     {
         $data = $request->validated();
 
-        $this->model::create([
-            'name' => $data['name'],
-            'icon' => $data['icon'],
-        ]);
+        if (isset($data['icon']) && $data['icon'] instanceof \Illuminate\Http\UploadedFile){
+            $data['icon'] = getFile($data['icon'], 'categories', 's3');
+        }
+
+        $this->model::create($data);
 
         session()->flash('success', 'Categoria criada com sucesso');
     }
@@ -61,19 +60,24 @@ class CategoryController extends AuthController
 
         $data = $request->validated();
 
-        $category->update([
-            'name' => $data['name'],
-            'icon' => $data['icon'],
-        ]);
+        if (isset($data['icon']) && $data['icon'] instanceof \Illuminate\Http\UploadedFile){
+            $data['icon'] = getFile($data['icon'], 'categories', 's3');
+        }
+
+        $category->update($data);
 
         session()->flash('success', 'Categoria atualizada com sucesso');
     }
 
     public function destroy(string $externalId)
     {
-        $Category = $this->model::where('external_id', $externalId)->firstOrFail();
+        $category = $this->model::where('external_id', $externalId)->firstOrFail();
 
-        $Category->delete();
+        if ($category->icon) {
+            deleteFile($category->icon, 's3');
+        }
+
+        $category->delete();
 
         session()->flash('success', 'Categoria deletada com sucesso');
     }

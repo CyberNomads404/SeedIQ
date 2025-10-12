@@ -20,4 +20,5 @@ Route::prefix('/')->middleware(['auth'])->group(function () {
     require 'roles/routes.php';
     require 'users/routes.php';
     require 'feedbacks/routes.php';
+    require 'categories/routes.php';
 });

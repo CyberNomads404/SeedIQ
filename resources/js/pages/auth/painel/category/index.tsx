@@ -93,7 +93,7 @@ const getColumns = (
             const onUpdate = () => setIsOpenUpdateForm(!isOpenUpdateForm);
 
             const handleUpdate = (values: z.infer<typeof categoryFormSchema>, external_id?: string) => {
-                router.put(route('accessibilities.update', external_id), values, {
+                router.put(route('categories.update', external_id), values, {
                     preserveState: true,
                     preserveScroll: true,
                     onSuccess: () => {
@@ -106,7 +106,7 @@ const getColumns = (
             };
 
             const handleDelete = (external_id: string) => {
-                router.delete(route('accessibilities.destroy', external_id), {
+                router.delete(route('categories.destroy', external_id), {
                     preserveState: true,
                     preserveScroll: true,
                 });
@@ -114,7 +114,7 @@ const getColumns = (
 
             return (
                 <>
-                    {useHasAnyPermission(['accessibilities_edit', 'accessibilities_delete']) && (
+                    {useHasAnyPermission(['categories_edit', 'categories_delete']) && (
                         <div className="flex items-center justify-end gap-2">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -125,13 +125,13 @@ const getColumns = (
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                                    {useHasPermission("accessibilities_edit") && (
+                                    {useHasPermission("categories_edit") && (
                                         <DropdownMenuItem onClick={onUpdate}>
                                             Atualizar
                                         </DropdownMenuItem>
                                     )}
                                     <DropdownMenuSeparator />
-                                    {useHasPermission("accessibilities_delete") && (
+                                    {useHasPermission("categories_delete") && (
                                         <DropdownMenuItem onClick={onAlertDelete}>
                                             Deletar
                                         </DropdownMenuItem>
@@ -173,11 +173,11 @@ const getColumns = (
 ];
 
 
-export default function Index({ accessibilities, query_params }: ICategoryProps) {
-    const [categoryData, setCategoryData] = useState<ICategory[]>(accessibilities.data);
-    const [currentPage, setCurrentPage] = useState(accessibilities.current_page);
-    const [lastPage, setLastPage] = useState(accessibilities.last_page);
-    const [perPage, setPerPage] = useState(accessibilities.per_page);
+export default function Index({ categories, query_params }: ICategoryProps) {
+    const [categoryData, setCategoryData] = useState<ICategory[]>(categories.data);
+    const [currentPage, setCurrentPage] = useState(categories.current_page);
+    const [lastPage, setLastPage] = useState(categories.last_page);
+    const [perPage, setPerPage] = useState(categories.per_page);
     const [searchValue, setSearchValue] = useState(query_params.search ?? "");
     const [sort, setSort] = useState<{ column: string; direction: "asc" | "desc" }>({
         column: query_params.sort_column ?? "name",
@@ -203,11 +203,11 @@ export default function Index({ accessibilities, query_params }: ICategoryProps)
     const [columns, setColumns] = useState(getColumns(sort, handleSort));
 
     useEffect(() => {
-        setCategoryData(accessibilities.data);
+        setCategoryData(categories.data);
         setColumns(getColumns(sort, handleSort));
-        setCurrentPage(accessibilities.current_page);
-        setLastPage(accessibilities.last_page);
-        setPerPage(accessibilities.per_page);
+        setCurrentPage(categories.current_page);
+        setLastPage(categories.last_page);
+        setPerPage(categories.per_page);
         setFilters({
             name: query_params.filter_name ?? "",
             parent: query_params.filter_parent ?? "",
@@ -219,7 +219,7 @@ export default function Index({ accessibilities, query_params }: ICategoryProps)
                 direction: query_params.sort_direction as "asc" | "desc"
             });
         }
-    }, [accessibilities, query_params]);
+    }, [categories, query_params]);
 
     useEffect(() => {
         if (categoryData.length === 0 && currentPage > 1) {
@@ -234,7 +234,7 @@ export default function Index({ accessibilities, query_params }: ICategoryProps)
         sort = { column: "name", direction: "asc" as "asc" | "desc" },
         filters = { name: "", parent: "", icon: "" }
     ) => {
-        router.get(route('accessibilities.index'), {
+        router.get(route('categories.index'), {
             page,
             per_page: perPage,
             search,
@@ -260,7 +260,7 @@ export default function Index({ accessibilities, query_params }: ICategoryProps)
 
     const onPageChange = (page: number) => {
         setCurrentPage(page);
-        if (page != accessibilities.current_page) {
+        if (page != categories.current_page) {
             fetchCategories(page, perPage, searchValue, sort);
         }
     };
@@ -272,7 +272,7 @@ export default function Index({ accessibilities, query_params }: ICategoryProps)
     const onRowsPerPageChange = (rows: number) => {
         setPerPage(rows);
         setCurrentPage(1);
-        if (rows != accessibilities.per_page) {
+        if (rows != categories.per_page) {
             fetchCategories(1, rows, searchValue, sort);
         }
     };
@@ -293,7 +293,7 @@ export default function Index({ accessibilities, query_params }: ICategoryProps)
     const onAddCategory = () => setIsOpenAddCategoryForm(!isOpenAddCategoryForm);
 
     const handleSubmit = (values: z.infer<typeof categoryFormSchema>) => {
-        router.post(route('accessibilities.store'), values, {
+        router.post(route('categories.store'), values, {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => {
@@ -303,11 +303,11 @@ export default function Index({ accessibilities, query_params }: ICategoryProps)
     };
 
     return (
-        <AuthenticatedLayout header="Lista de Acessibilidades">
-            <Head title="Lista de Acessibilidades" />
+        <AuthenticatedLayout header="Lista de Categorias">
+            <Head title="Lista de Categorias" />
             <div className="flex flex-1 flex-col gap-4 h-full">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">Lista de Acessibilidades</h2>
+                    <h2 className="text-lg font-semibold">Lista de Categorias</h2>
 
                     {/* Controles de Filtro - igual ao de empresa */}
                     <div className="flex items-center gap-2">
@@ -407,7 +407,7 @@ export default function Index({ accessibilities, query_params }: ICategoryProps)
                     onRowsPerPageChange={onRowsPerPageChange}
                     onAdd={onAddCategory}
                     permissions={{
-                        create: "accessibilities_create",
+                        create: "categories_create",
                     }}
                 />
             </div>

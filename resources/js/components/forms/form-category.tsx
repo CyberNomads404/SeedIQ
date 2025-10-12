@@ -76,12 +76,12 @@ export const CategoryFormDialog: React.FC<ICategoryFormDialogProps> = ({
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
-                        {isEditing ? "Editar Usuário" : "Adicionar Usuário"}
+                        {isEditing ? "Editar Categoria" : "Adicionar Categoria"}
                     </DialogTitle>
                     <DialogDescription>
                         {isEditing
-                            ? "Altere o usuário do sistema."
-                            : "Adicione um novo usuário ao sistema."}
+                            ? "Altere a categoria do sistema."
+                            : "Adicione uma nova categoria ao sistema."}
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={form.handleSubmit(handleSubmit)}>

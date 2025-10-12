@@ -21,7 +21,7 @@ interface ICategoryData {
 }
 
 interface ICategoryProps {
-    accessibilities: ICategoryData;
+    categories: ICategoryData;
     query_params: {
         search?: string;
         [key: string]: any;
