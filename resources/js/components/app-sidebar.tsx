@@ -16,7 +16,8 @@ import {
     LocateFixedIcon,
     MessageSquare,
     ShieldQuestion,
-    MessageCircleQuestion
+    MessageCircleQuestion,
+    BarChart3
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -68,6 +69,18 @@ const data = {
             icon: MessageCircleQuestion,
             permission: "feedbacks_list"
         },
+        {
+            title: "Categorias",
+            url: "/categories",
+            icon: Tag,
+            permission: "categories_list"
+        },
+        {
+            title: "Classificações",
+            url: "/classifications",
+            icon: BarChart3,
+            permission: "classifications_list"
+        }
     ],
     navSecondary: [
         {
