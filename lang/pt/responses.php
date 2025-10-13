@@ -27,6 +27,11 @@ return [
         'list_success' => 'Categorias recuperadas com sucesso.',
     ],
 
+    'classification' => [
+        'list_success' => 'Classificações recuperadas com sucesso.',
+        'get_status_success' => 'Status de classificações recuperados com sucesso.',
+    ],
+
     'error' => [
         'user_inactive' => 'Usuário foi desativado. Fale com um administrador.',
         'permission_denied' => 'Permissão negada. Você não tem acesso a essa parte do sistema.',

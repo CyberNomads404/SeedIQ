@@ -27,6 +27,11 @@ return [
         'list_success' => 'Categories retrieved successfully.',
     ],
 
+    'classification' => [
+        'list_success' => 'Classifications retrieved successfully.',
+        'get_status_success' => 'Classification status retrieved successfully.',
+    ],
+
     'error' => [
         'user_inactive' => 'User has been deactivated. Please contact a administrator.',
         'permission_denied' => 'Permission denied. You do not have access to this part of the system.',
