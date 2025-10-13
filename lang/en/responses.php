@@ -23,6 +23,10 @@ return [
         'get_types_success' => 'Feedback types retrieved successfully.',
     ],
 
+    'category' => [
+        'list_success' => 'Categories retrieved successfully.',
+    ],
+
     'error' => [
         'user_inactive' => 'User has been deactivated. Please contact a administrator.',
         'permission_denied' => 'Permission denied. You do not have access to this part of the system.',

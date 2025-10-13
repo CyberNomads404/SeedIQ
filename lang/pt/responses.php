@@ -23,6 +23,10 @@ return [
         'get_types_success' => 'Tipos de feedback recuperados com sucesso.',
     ],
 
+    'category' => [
+        'list_success' => 'Categorias recuperadas com sucesso.',
+    ],
+
     'error' => [
         'user_inactive' => 'Usuário foi desativado. Fale com um administrador.',
         'permission_denied' => 'Permissão negada. Você não tem acesso a essa parte do sistema.',

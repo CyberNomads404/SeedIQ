@@ -11,3 +11,7 @@ Route::prefix('auth')->middleware(['auth:sanctum', 'check.access.token'])->group
     Route::get('me', [AuthController::class, 'me'])->name('auth.me');
     Route::put('update-profile', [AuthController::class, 'updateProfile'])->name('auth.update-profile');
 });
+
+Route::middleware(['auth:sanctum', 'check.access.token'])->group(function () {
+    require __DIR__.'/categories/routes.php';
+});
