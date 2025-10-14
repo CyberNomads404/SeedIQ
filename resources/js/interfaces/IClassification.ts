@@ -1,11 +1,21 @@
-import { z } from "zod";
-import { categoryFormSchema } from "@/schemas/form-category-schema";
+import { IUser } from "./IUser";
 
 interface ICategory {
     external_id: string;
     name: string;
-    icon?: string;
-    icon_url?: string;
+    status: string;
+    status_label?: string;
+    message?: string;
+    file_url: string;
+
+    result?: ICategoryResult | null;
+    category_for_display?: ICategory | null;
+    user_for_display?: IUser | null;
+}
+
+interface ICategoryResult {
+    external_id: string;
+    payload: string;
 }
 
 interface ICategoryData {
@@ -33,20 +43,8 @@ interface ICategoryProps {
     };
 }
 
-interface ICategoryFormDialogProps {
-    data?: any;
-    external_id?: string;
-    isOpen: boolean;
-    setIsOpen: (isOpen: boolean) => void;
-    onSubmit: (
-        values: z.infer<typeof categoryFormSchema>,
-        external_id?: string
-    ) => void;
-}
-
 export type {
     ICategory,
     ICategoryData,
-    ICategoryFormDialogProps,
     ICategoryProps,
 };

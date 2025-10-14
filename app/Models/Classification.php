@@ -20,11 +20,16 @@ class Classification extends BaseSoftDeleteModel
         'category_for_display',
         'file_url',
         'status_label',
+        'user_for_display',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class)->withTrashed();
+    }
+
+    public function getUserForDisplayAttribute() {
+        return $this->user();
     }
 
     public function category()
