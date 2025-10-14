@@ -30,6 +30,8 @@ return [
     'classification' => [
         'list_success' => 'Classifications retrieved successfully.',
         'get_status_success' => 'Classification status retrieved successfully.',
+        'create_success' => 'Classification created successfully.',
+        'get_success' => 'Classification retrieved successfully.',
     ],
 
     'error' => [
