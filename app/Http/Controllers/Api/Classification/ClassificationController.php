@@ -65,7 +65,13 @@ class ClassificationController extends AuthController
     }
 
     public function show(string $externalId) {
-        $classification = $this->findBy(new $this->model, 'external_id', $externalId)->load('result');
+        $classification = $this->findBy(new $this->model, 'external_id', $externalId);
+
+        if (!$classification) {
+            return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404, []);
+        }
+
+        $classification->load('result');
 
         return $this->responseMessage('success', trans('responses.classification.get_success'), 200, new ClassificationResource($classification));
     }

@@ -13,24 +13,30 @@ class ClassificationController extends AuthController
     public function index()
     {
         $perPage = request()->get('per_page', 10);
-        $search = request()->get('search', '');
         $sortColumn = request()->get('sort_column', 'name');
         $sortDirection = request()->get('sort_direction', 'asc');
 
-        // Filtros
-        $filterName = request()->get('filter_name', '');
+        $filterCategoriesExternalId = request()->get('filter_categories_external_id', '');
+        $filterStatus = request()->get('filter_status', '');
 
         $allowedSortColumns = ['name', 'created_at', 'updated_at'];
         if (!in_array($sortColumn, $allowedSortColumns)) {
             $sortColumn = 'name';
         }
+
         if (!in_array($sortDirection, ['asc', 'desc'])) {
             $sortDirection = 'asc';
         }
 
         $classifications = $this->model::query()
-            ->when($search, fn($q) => $q->where('name', 'like', "%$search%"))
-            ->when($filterName, fn($q) => $q->where('name', 'like', "%$filterName%"))
+            ->when($filterCategoriesExternalId, function ($query) use ($filterCategoriesExternalId) {
+                $query->whereHas('categories', function ($q) use ($filterCategoriesExternalId) {
+                    $q->where('external_id', $filterCategoriesExternalId);
+                });
+            })
+            ->when($filterStatus, function ($query) use ($filterStatus) {
+                $query->where('status', $filterStatus);
+            })
             ->orderBy($sortColumn, $sortDirection)
             ->paginate($perPage);
 
@@ -44,10 +50,11 @@ class ClassificationController extends AuthController
     {
         $classification = $this->model::where('external_id', $externalId)->firstOrFail();
 
-        if ($classification->icon) {
-            deleteFile($classification->icon, 's3');
+        if ($classification->file) {
+            deleteFile($classification->file, 's3');
         }
 
+        $classification->result()->delete();
         $classification->delete();
 
         session()->flash('success', 'Classificação deletada com sucesso');

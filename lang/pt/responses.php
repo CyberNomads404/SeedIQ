@@ -48,5 +48,6 @@ return [
         'email_verification_error' => 'Ocorreu um erro ao verificar o e-mail. Por favor, tente novamente mais tarde.',
         'password_reset_invalid_token' => 'Token de redefinição de senha inválido ou expirado.',
         'error_password_same' => 'A nova senha não pode ser a mesma que a senha antiga.',
+        'classification_not_found' => 'Classificação não encontrada.',
     ],
 ];

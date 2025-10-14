@@ -48,5 +48,6 @@ return [
         'email_verification_error' => 'An error occurred while verifying the email. Please try again later.',
         'password_reset_invalid_token' => 'Invalid or expired password reset token.',
         'error_password_same' => 'New password cannot be the same as the old password.',
+        'category_not_found' => 'Category not found.',
     ],
 ];
