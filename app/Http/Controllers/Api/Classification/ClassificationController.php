@@ -49,12 +49,20 @@ class ClassificationController extends AuthController
         ]);
     }
 
-    public function getClassificationStatus()
-    {
-        $status = StatusTypeEnum::options();
+    public function store(ClassificationRequest $request) {
+        $validated = $request->validated();
 
-        return $this->responseMessage('success', trans('responses.classification.get_status_success'), 200, [
-            'status' => $status,
-        ]);
+        $validated['status'] = StatusTypeEnum::REGISTERED;
+        $validated['file'] = uploadFile($validated['file'], 'classifications', 's3');
+
+        $classification = $this->model::create($validated);
+
+        return $this->responseMessage('success', trans('responses.classification.create_success'),200, []);
+    }
+
+    public function show(string $externalId) {
+        $classification = $this->findBy(new $this->model, 'external_id', $externalId)->load('result');
+
+        return $this->responseMessage('success', trans('responses.classification.get_success'), 200, new ClassificationResource($classification));
     }
 }
