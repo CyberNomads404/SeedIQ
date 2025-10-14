@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Requests\Api\Classification\ClassificationRequest;
 use App\Http\Resources\Api\Classification\ClassificationResource;
 use App\Http\Resources\Api\Meta\MetaResource;
+use App\Models\Category;
 use App\Models\Classification;
 
 class ClassificationController extends AuthController
@@ -40,6 +41,7 @@ class ClassificationController extends AuthController
             ->when($filterStatus, function ($query) use ($filterStatus) {
                 $query->where('status', $filterStatus);
             })
+            ->where('user_id', $this->authUser->id)
             ->orderBy($sortColumn, $sortDirection)
             ->paginate($perPage);
 
@@ -52,10 +54,12 @@ class ClassificationController extends AuthController
     public function store(ClassificationRequest $request) {
         $validated = $request->validated();
 
+        $validated['user_id'] = $this->authUser->id;
+        $validated['category_id'] = $this->findBy(new Category, 'external_id', $validated['category_external_id'])->id;
         $validated['status'] = StatusTypeEnum::REGISTERED;
         $validated['file'] = uploadFile($validated['file'], 'classifications', 's3');
 
-        $classification = $this->model::create($validated);
+        $this->model::create($validated);
 
         return $this->responseMessage('success', trans('responses.classification.create_success'),200, []);
     }

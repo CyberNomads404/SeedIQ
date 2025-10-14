@@ -31,6 +31,11 @@ class ClassificationRequest extends CrudRequest
                 'mimes:jpeg,jpg,png,heic,heif',
                 'max:5120',
             ],
+            'category_external_id' => [
+                'sometimes',
+                'required',
+                'exists:categories,external_id',
+            ],
         ];
 
         return $rules;
@@ -54,6 +59,10 @@ class ClassificationRequest extends CrudRequest
                 'image',
                 'mimes:jpeg,jpg,png,heic,heif',
                 'max:5120',
+            ],
+            'category_external_id' => [
+                'required',
+                'exists:categories,external_id',
             ],
         ];
 
