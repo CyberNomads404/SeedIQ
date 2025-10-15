@@ -17,12 +17,14 @@ class ClassificationController extends AuthController
         $sortColumn = request()->get('sort_column', 'name');
         $sortDirection = request()->get('sort_direction', 'asc');
 
-        $filterCategoriesExternalId = request()->get('filter_categories_external_id', '');
+        $filterCategories= request()->get('filter_category', '');
         $filterStatus = request()->get('filter_status', '');
+        $filterUser = request()->get('filter_user', '');
+        $filterMessage = request()->get('filter_message', '');
 
-        $allowedSortColumns = ['name', 'created_at', 'updated_at'];
+        $allowedSortColumns = ['status', 'user', 'category', 'created_at', 'updated_at'];
         if (!in_array($sortColumn, $allowedSortColumns)) {
-            $sortColumn = 'name';
+            $sortColumn = 'created_at';
         }
 
         if (!in_array($sortDirection, ['asc', 'desc'])) {
@@ -30,13 +32,21 @@ class ClassificationController extends AuthController
         }
 
         $classifications = $this->model::query()
-            ->when($filterCategoriesExternalId, function ($query) use ($filterCategoriesExternalId) {
-                $query->whereHas('categories', function ($q) use ($filterCategoriesExternalId) {
-                    $q->where('external_id', $filterCategoriesExternalId);
+            ->when($filterCategories, function ($query) use ($filterCategories, $filterStatus) {
+                $query->whereHas('categories', function ($q) use ($filterCategories) {
+                    $q->where('name', 'like', '%' . $filterCategories . '%');
                 });
             })
             ->when($filterStatus, function ($query) use ($filterStatus) {
                 $query->where('status', $filterStatus);
+            })
+            ->when($filterUser, function ($query) use ($filterUser) {
+                $query->whereHas('user', function ($q) use ($filterUser) {
+                    $q->where('name', 'like', '%' . $filterUser . '%');
+                });
+            })
+            ->when($filterMessage, function ($query) use ($filterMessage) {
+                $query->where('message', 'like', '%' . $filterMessage . '%');
             })
             ->orderBy($sortColumn, $sortDirection)
             ->paginate($perPage);
