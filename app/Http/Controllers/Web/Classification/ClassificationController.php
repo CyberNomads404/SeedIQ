@@ -22,7 +22,7 @@ class ClassificationController extends AuthController
         $filterUser = request()->get('filter_user', '');
         $filterMessage = request()->get('filter_message', '');
 
-        $allowedSortColumns = ['status', 'user', 'category', 'created_at', 'updated_at'];
+        $allowedSortColumns = ['status', 'created_at', 'updated_at'];
         if (!in_array($sortColumn, $allowedSortColumns)) {
             $sortColumn = 'created_at';
         }

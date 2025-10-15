@@ -123,22 +123,7 @@ const getColumns = (
         header: ({ column }) => {
             const isSorted = sort.column === "category";
             return (
-                <Button
-                    variant="ghost"
-                    className="h-auto p-0 font-semibold hover:bg-transparent"
-                    onClick={() => onSort("category")}
-                >
-                    Categoria
-                    {isSorted ? (
-                        sort.direction === "asc" ? (
-                            <ArrowUp className="ml-2 h-4 w-4" />
-                        ) : (
-                            <ArrowDown className="ml-2 h-4 w-4" />
-                        )
-                    ) : (
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    )}
-                </Button>
+                <span className="font-semibold">Categoria</span>
             );
         },
         cell: ({ row }) => {
@@ -156,22 +141,7 @@ const getColumns = (
         header: ({ column }) => {
             const isSorted = sort.column === "user";
             return (
-                <Button
-                    variant="ghost"
-                    className="h-auto p-0 font-semibold hover:bg-transparent"
-                    onClick={() => onSort("user")}
-                >
-                    Usuário
-                    {isSorted ? (
-                        sort.direction === "asc" ? (
-                            <ArrowUp className="ml-2 h-4 w-4" />
-                        ) : (
-                            <ArrowDown className="ml-2 h-4 w-4" />
-                        )
-                    ) : (
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    )}
-                </Button>
+                <span className="font-semibold">Usuário</span>
             );
         },
         cell: ({ row }) => {
