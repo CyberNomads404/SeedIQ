@@ -1,6 +1,7 @@
+import { ICategory } from "./ICategory";
 import { IUser } from "./IUser";
 
-interface ICategory {
+interface IClassification {
     external_id: string;
     name: string;
     status: string;
@@ -8,18 +9,18 @@ interface ICategory {
     message?: string;
     file_url: string;
 
-    result?: ICategoryResult | null;
+    result?: IClassificationResult | null;
     category_for_display?: ICategory | null;
     user_for_display?: IUser | null;
 }
 
-interface ICategoryResult {
+interface IClassificationResult {
     external_id: string;
     payload: string;
 }
 
-interface ICategoryData {
-    data: ICategory[];
+interface IClassificationData {
+    data: IClassification[];
     first_page_url: string;
     last_page_url: string;
     next_page_url: string;
@@ -31,8 +32,8 @@ interface ICategoryData {
     last_page: number;
 }
 
-interface ICategoryProps {
-    categories: ICategoryData;
+interface IClassificationProps {
+    classifications: IClassificationData;
     query_params: {
         search?: string;
         [key: string]: any;
@@ -44,7 +45,7 @@ interface ICategoryProps {
 }
 
 export type {
-    ICategory,
-    ICategoryData,
-    ICategoryProps,
+    IClassification,
+    IClassificationData,
+    IClassificationProps,
 };

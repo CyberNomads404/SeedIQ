@@ -33,12 +33,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CategoryFormDialog } from "@/components/forms/form-category";
-
-import { ICategory, ICategoryProps } from "@/interfaces/ICategory";
-import { categoryFormSchema } from "@/schemas/form-category-schema";
+import { IClassification, IClassificationProps } from "@/interfaces/IClassification";
 import { useHasAnyPermission, useHasPermission } from "@/utils/permissions";
-import { IRoleForCreateOptions } from "@/interfaces/ISelect";
 
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import {
@@ -56,7 +52,6 @@ const getColumns = (
     sort: { column: string; direction: "asc" | "desc" },
     onSort: (column: string) => void
 ): ColumnDef<any>[] => [
-    // ...existing code...
     {
         accessorKey: "name",
         header: ({ column }) => {
@@ -67,7 +62,7 @@ const getColumns = (
                     className="h-auto p-0 font-semibold hover:bg-transparent"
                     onClick={() => onSort("name")}
                 >
-                    Nome
+                    Operador(a)
                     {isSorted ? (
                         sort.direction === "asc" ? (
                             <ArrowUp className="ml-2 h-4 w-4" />
@@ -81,17 +76,17 @@ const getColumns = (
             );
         },
         cell: ({ row }) => {
-            const category = row.original;
+            const classification = row.original;
             return (
                 <div className="flex items-center gap-3">
-                    {category.icon_url ? (
-                        <img src={category.icon_url} alt={category.name} className="w-6 h-6 object-contain rounded" />
+                    {classification.icon_url ? (
+                        <img src={classification.icon_url} alt={classification.name} className="w-6 h-6 object-contain rounded" />
                     ) : (
                         <div className="w-6 h-6 bg-muted rounded flex items-center justify-center text-sm text-muted-foreground">
                             <Slash className="w-4 h-4" />
                         </div>
                     )}
-                    <span className="font-medium">{category.name}</span>
+                    <span className="font-medium">{classification.name}</span>
                 </div>
             );
         },
@@ -100,29 +95,13 @@ const getColumns = (
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-            const category = row.original;
+            const classification = row.original;
 
             const [isOpenAlertDelete, setIsOpenAlertDelete] = useState<boolean>(false);
             const onAlertDelete = () => setIsOpenAlertDelete(!isOpenAlertDelete);
 
-            const [isOpenUpdateForm, setIsOpenUpdateForm] = useState<boolean>(false);
-            const onUpdate = () => setIsOpenUpdateForm(!isOpenUpdateForm);
-
-            const handleUpdate = (values: z.infer<typeof categoryFormSchema>, external_id?: string) => {
-                router.post(route('categories.update', external_id), {...values, _method: 'PUT'}, {
-                    preserveState: true,
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        onUpdate();
-                    },
-                    onError: (errors) => {
-                        console.error(errors);
-                    },
-                });
-            };
-
             const handleDelete = (external_id: string) => {
-                router.delete(route('categories.destroy', external_id), {
+                router.delete(route('classifications.destroy', external_id), {
                     preserveState: true,
                     preserveScroll: true,
                 });
@@ -130,7 +109,7 @@ const getColumns = (
 
             return (
                 <>
-                    {useHasAnyPermission(['categories_edit', 'categories_delete']) && (
+                    {useHasAnyPermission(['classifications_list', 'classifications_delete']) && (
                         <div className="flex items-center justify-end gap-2">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -141,13 +120,15 @@ const getColumns = (
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                                    {useHasPermission("categories_edit") && (
-                                        <DropdownMenuItem onClick={onUpdate}>
-                                            Atualizar
-                                        </DropdownMenuItem>
+                                    {useHasPermission("classifications_list") && (
+                                        <Link href={route('classifications.show', classification.external_id)} className="no-underline">
+                                            <DropdownMenuItem>
+                                                Ver Detalhes
+                                            </DropdownMenuItem>
+                                        </Link>
                                     )}
                                     <DropdownMenuSeparator />
-                                    {useHasPermission("categories_delete") && (
+                                    {useHasPermission("classifications_delete") && (
                                         <DropdownMenuItem onClick={onAlertDelete}>
                                             Deletar
                                         </DropdownMenuItem>
@@ -166,20 +147,12 @@ const getColumns = (
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel onClick={onAlertDelete}>Cancelar</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => { handleDelete(category.external_id); onAlertDelete() }} className="bg-red-500 hover:bg-red-900">
+                                        <AlertDialogAction onClick={() => { handleDelete(classification.external_id); onAlertDelete() }} className="bg-red-500 hover:bg-red-900">
                                             Continuar
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
-
-                            <CategoryFormDialog
-                                data={category}
-                                external_id={category.external_id}
-                                isOpen={isOpenUpdateForm}
-                                setIsOpen={setIsOpenUpdateForm}
-                                onSubmit={handleUpdate}
-                            />
                         </div>
                     )}
                 </>
@@ -189,11 +162,11 @@ const getColumns = (
 ];
 
 
-export default function Index({ categories, query_params }: ICategoryProps) {
-    const [categoryData, setCategoryData] = useState<ICategory[]>(categories.data);
-    const [currentPage, setCurrentPage] = useState(categories.current_page);
-    const [lastPage, setLastPage] = useState(categories.last_page);
-    const [perPage, setPerPage] = useState(categories.per_page);
+export default function Index({ classifications, query_params }: IClassificationProps) {
+    const [classificationData, setClassificationData] = useState<IClassification[]>(classifications.data);
+    const [currentPage, setCurrentPage] = useState(classifications.current_page);
+    const [lastPage, setLastPage] = useState(classifications.last_page);
+    const [perPage, setPerPage] = useState(classifications.per_page);
     const [searchValue, setSearchValue] = useState(query_params.search ?? "");
     const [sort, setSort] = useState<{ column: string; direction: "asc" | "desc" }>({
         column: query_params.sort_column ?? "name",
@@ -219,11 +192,11 @@ export default function Index({ categories, query_params }: ICategoryProps) {
     const [columns, setColumns] = useState(getColumns(sort, handleSort));
 
     useEffect(() => {
-        setCategoryData(categories.data);
+        setClassificationData(classifications.data);
         setColumns(getColumns(sort, handleSort));
-        setCurrentPage(categories.current_page);
-        setLastPage(categories.last_page);
-        setPerPage(categories.per_page);
+        setCurrentPage(classifications.current_page);
+        setLastPage(classifications.last_page);
+        setPerPage(classifications.per_page);
         setFilters({
             name: query_params.filter_name ?? "",
             parent: query_params.filter_parent ?? "",
@@ -235,13 +208,13 @@ export default function Index({ categories, query_params }: ICategoryProps) {
                 direction: query_params.sort_direction as "asc" | "desc"
             });
         }
-    }, [categories, query_params]);
+    }, [classifications, query_params]);
 
     useEffect(() => {
-        if (categoryData.length === 0 && currentPage > 1) {
+        if (classificationData.length === 0 && currentPage > 1) {
             fetchCategories(currentPage - 1, perPage, searchValue, sort);
         }
-    }, [categoryData]);
+    }, [classificationData]);
 
     const fetchCategoriesWithFilters = (
         page = 1,
@@ -250,7 +223,7 @@ export default function Index({ categories, query_params }: ICategoryProps) {
         sort = { column: "name", direction: "asc" as "asc" | "desc" },
         filters = { name: "", parent: "", icon: "" }
     ) => {
-        router.get(route('categories.index'), {
+        router.get(route('classifications.index'), {
             page,
             per_page: perPage,
             search,
@@ -276,7 +249,7 @@ export default function Index({ categories, query_params }: ICategoryProps) {
 
     const onPageChange = (page: number) => {
         setCurrentPage(page);
-        if (page != categories.current_page) {
+        if (page != classifications.current_page) {
             fetchCategories(page, perPage, searchValue, sort);
         }
     };
@@ -288,7 +261,7 @@ export default function Index({ categories, query_params }: ICategoryProps) {
     const onRowsPerPageChange = (rows: number) => {
         setPerPage(rows);
         setCurrentPage(1);
-        if (rows != categories.per_page) {
+        if (rows != classifications.per_page) {
             fetchCategories(1, rows, searchValue, sort);
         }
     };
@@ -303,19 +276,6 @@ export default function Index({ categories, query_params }: ICategoryProps) {
         setFilters(emptyFilters);
         setCurrentPage(1);
         fetchCategoriesWithFilters(1, perPage, searchValue, sort, emptyFilters);
-    };
-
-    const [isOpenAddCategoryForm, setIsOpenAddCategoryForm] = useState<boolean>(false);
-    const onAddCategory = () => setIsOpenAddCategoryForm(!isOpenAddCategoryForm);
-
-    const handleSubmit = (values: z.infer<typeof categoryFormSchema>) => {
-        router.post(route('categories.store'), values, {
-            preserveState: true,
-            preserveScroll: true,
-            onSuccess: () => {
-                onAddCategory();
-            },
-        });
     };
 
     return (
@@ -397,7 +357,7 @@ export default function Index({ categories, query_params }: ICategoryProps) {
                 </div>
 
                 <DataTable
-                    data={categoryData}
+                    data={classificationData}
                     columns={columns}
                     currentPage={currentPage}
                     lastPage={lastPage}
@@ -408,19 +368,8 @@ export default function Index({ categories, query_params }: ICategoryProps) {
                     onSearchSubmit={onSearchSubmit}
                     onPageChange={onPageChange}
                     onRowsPerPageChange={onRowsPerPageChange}
-                    onAdd={onAddCategory}
-                    permissions={{
-                        create: "categories_create",
-                    }}
                 />
             </div>
-
-            {/* Formulário de Adicionar Permissão */}
-            <CategoryFormDialog
-                isOpen={isOpenAddCategoryForm}
-                setIsOpen={setIsOpenAddCategoryForm}
-                onSubmit={handleSubmit}
-            />
         </AuthenticatedLayout>
     );
 }
