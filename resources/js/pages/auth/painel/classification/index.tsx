@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { Head, Link, router } from "@inertiajs/react";
-import { MoreHorizontal, Slash, Building2, MapPin, User as UserIcon } from "lucide-react";
+import {
+    MoreHorizontal,
+    Slash,
+    Building2,
+    MapPin,
+    User as UserIcon,
+} from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 
 import AuthenticatedLayout from "@/layouts/authenticated-layout";
@@ -33,7 +39,10 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { IClassification, IClassificationProps } from "@/interfaces/IClassification";
+import {
+    IClassification,
+    IClassificationProps,
+} from "@/interfaces/IClassification";
 import { useHasAnyPermission, useHasPermission } from "@/utils/permissions";
 
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
@@ -69,29 +78,33 @@ const getColumns = (
                     ) : (
                         <div className="flex flex-col items-center justify-center text-muted-foreground space-y-2">
                             <MapPin className="w-8 h-8" />
-                            <span className="text-xs font-medium">Sem imagem</span>
+                            <span className="text-xs font-medium">
+                                Sem imagem
+                            </span>
                         </div>
                     )}
                 </div>
             );
-        }
+        },
     },
     {
         accessorKey: "message",
         header: () => <span className="font-semibold">Mensagem</span>,
         cell: ({ row }) => {
             const classification = row.original;
-            return <span className="text-sm text-foreground/90">{classification.message ?? '-'}</span>;
-        }
+            return (
+                <span className="text-sm text-foreground/90">
+                    {classification.message ?? "-"}
+                </span>
+            );
+        },
     },
     {
         id: "category",
-        accessorFn: (row) => row.category_for_display?.name ?? '-',
+        accessorFn: (row) => row.category_for_display?.name ?? "-",
         header: ({ column }) => {
             const isSorted = sort.column === "category";
-            return (
-                <span className="font-semibold">Categoria</span>
-            );
+            return <span className="font-semibold">Categoria</span>;
         },
         cell: ({ row }) => {
             const classification = row.original;
@@ -109,7 +122,11 @@ const getColumns = (
                 <div className="flex items-center gap-3 min-w-[160px]">
                     {cat.icon_url ? (
                         <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
-                            <img src={cat.icon_url} alt={cat.name} className="w-full h-full object-cover" />
+                            <img
+                                src={cat.icon_url}
+                                alt={cat.name}
+                                className="w-full h-full object-cover"
+                            />
                         </div>
                     ) : (
                         <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
@@ -117,20 +134,20 @@ const getColumns = (
                         </div>
                     )}
                     <div className="text-left flex-1 min-w-0">
-                        <h4 className="font-medium text-foreground text-sm truncate">{cat.name}</h4>
+                        <h4 className="font-medium text-foreground text-sm truncate">
+                            {cat.name}
+                        </h4>
                     </div>
                 </div>
             );
-        }
+        },
     },
     {
         id: "user",
-        accessorFn: (row) => row.user_for_display?.name ?? '-',
+        accessorFn: (row) => row.user_for_display?.name ?? "-",
         header: ({ column }) => {
             const isSorted = sort.column === "user";
-            return (
-                <span className="font-semibold">Usuário</span>
-            );
+            return <span className="font-semibold">Usuário</span>;
         },
         cell: ({ row }) => {
             const classification = row.original;
@@ -143,12 +160,20 @@ const getColumns = (
                 <Button
                     variant="ghost"
                     className="h-auto p-2 hover:bg-muted/50 transition-colors duration-200 min-w-[180px]"
-                    onClick={() => router.get(route('users.show', { uuid: user.external_id }))}
+                    onClick={() =>
+                        router.get(
+                            route("users.show", { uuid: user.external_id })
+                        )
+                    }
                 >
                     <div className="flex items-center gap-3 w-full">
                         {user.avatar_url ? (
                             <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
-                                <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                                <img
+                                    src={user.avatar_url}
+                                    alt={user.name}
+                                    className="w-full h-full object-cover"
+                                />
                             </div>
                         ) : (
                             <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
@@ -156,35 +181,61 @@ const getColumns = (
                             </div>
                         )}
                         <div className="text-left flex-1 min-w-0">
-                            <h4 className="font-medium text-foreground text-sm truncate">{user.name}</h4>
-                            <p className="text-xs text-muted-foreground">Clique para detalhes</p>
+                            <h4 className="font-medium text-foreground text-sm truncate">
+                                {user.name}
+                            </h4>
+                            <p className="text-xs text-muted-foreground">
+                                Clique para detalhes
+                            </p>
                         </div>
                     </div>
                 </Button>
             );
-        }
+        },
     },
-        {
+    {
         accessorKey: "status",
-        header: () => <span className="font-semibold">Status</span>,
+        header: ({ column }) => {
+            const isSorted = sort.column === "status";
+            return (
+                <Button
+                    variant="ghost"
+                    className="h-auto p-0 font-semibold hover:bg-transparent"
+                    onClick={() => onSort("status")}
+                >
+                    Status
+                    {isSorted ? (
+                        sort.direction === "asc" ? (
+                            <ArrowUp className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ArrowDown className="ml-2 h-4 w-4" />
+                        )
+                    ) : (
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    )}
+                </Button>
+            );
+        },
         cell: ({ row }) => {
             const classification = row.original;
             const statusColorMap: Record<string, string> = {
-                registered: 'bg-gray-100 text-gray-800',
-                in_progress: 'bg-yellow-100 text-yellow-800',
-                completed: 'bg-green-100 text-green-800',
-                failed: 'bg-red-100 text-red-800',
-                canceled: 'bg-gray-200 text-gray-800',
+                registered: "bg-gray-100 text-gray-800",
+                in_progress: "bg-yellow-100 text-yellow-800",
+                completed: "bg-green-100 text-green-800",
+                failed: "bg-red-100 text-red-800",
+                canceled: "bg-gray-200 text-gray-800",
             };
 
-            const colorClass = statusColorMap[classification.status] ?? 'bg-gray-100 text-gray-800';
+            const colorClass =
+                statusColorMap[classification.status] ??
+                "bg-gray-100 text-gray-800";
 
             return (
                 <span className={`px-2 py-0.5 rounded text-sm ${colorClass}`}>
                     {classification.status_label ?? classification.status}
                 </span>
             );
-        }
+        },
     },
     {
         accessorKey: "created_at",
@@ -214,11 +265,15 @@ const getColumns = (
             const value = classification.created_at;
             try {
                 const d = new Date(value);
-                return <span className="text-sm">{isNaN(d.getTime()) ? value : d.toLocaleString()}</span>;
+                return (
+                    <span className="text-sm">
+                        {isNaN(d.getTime()) ? value : d.toLocaleString()}
+                    </span>
+                );
             } catch {
-                return <span className="text-sm">{value ?? '-'}</span>;
+                return <span className="text-sm">{value ?? "-"}</span>;
             }
-        }
+        },
     },
     {
         id: "actions",
@@ -226,11 +281,13 @@ const getColumns = (
         cell: ({ row }) => {
             const classification = row.original;
 
-            const [isOpenAlertDelete, setIsOpenAlertDelete] = useState<boolean>(false);
-            const onAlertDelete = () => setIsOpenAlertDelete(!isOpenAlertDelete);
+            const [isOpenAlertDelete, setIsOpenAlertDelete] =
+                useState<boolean>(false);
+            const onAlertDelete = () =>
+                setIsOpenAlertDelete(!isOpenAlertDelete);
 
             const handleDelete = (external_id: string) => {
-                router.delete(route('classifications.destroy', external_id), {
+                router.delete(route("classifications.destroy", external_id), {
                     preserveState: true,
                     preserveScroll: true,
                 });
@@ -238,27 +295,45 @@ const getColumns = (
 
             return (
                 <>
-                    {useHasAnyPermission(['classifications_list', 'classifications_delete']) && (
+                    {useHasAnyPermission([
+                        "classifications_list",
+                        "classifications_delete",
+                    ]) && (
                         <div className="flex items-center justify-end gap-2">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="h-8 w-8 p-0">
+                                    <Button
+                                        variant="ghost"
+                                        className="h-8 w-8 p-0"
+                                    >
                                         <span className="sr-only">Opções</span>
                                         <MoreHorizontal />
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                                    {useHasPermission("classifications_list") && (
-                                        <Link href={route('classifications.show', classification.external_id)} className="no-underline">
+                                    {useHasPermission(
+                                        "classifications_list"
+                                    ) && (
+                                        <Link
+                                            href={route(
+                                                "classifications.show",
+                                                classification.external_id
+                                            )}
+                                            className="no-underline"
+                                        >
                                             <DropdownMenuItem>
                                                 Ver Detalhes
                                             </DropdownMenuItem>
                                         </Link>
                                     )}
                                     <DropdownMenuSeparator />
-                                    {useHasPermission("classifications_delete") && (
-                                        <DropdownMenuItem onClick={onAlertDelete}>
+                                    {useHasPermission(
+                                        "classifications_delete"
+                                    ) && (
+                                        <DropdownMenuItem
+                                            onClick={onAlertDelete}
+                                        >
                                             Deletar
                                         </DropdownMenuItem>
                                     )}
@@ -269,14 +344,30 @@ const getColumns = (
                             <AlertDialog open={isOpenAlertDelete}>
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
-                                        <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
+                                        <AlertDialogTitle>
+                                            Você tem certeza absoluta?
+                                        </AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            Esta ação não pode ser desfeita. Isso excluirá permanentemente esse registro do sistema.
+                                            Esta ação não pode ser desfeita.
+                                            Isso excluirá permanentemente esse
+                                            registro do sistema.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                        <AlertDialogCancel onClick={onAlertDelete}>Cancelar</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => { handleDelete(classification.external_id); onAlertDelete() }} className="bg-red-500 hover:bg-red-900">
+                                        <AlertDialogCancel
+                                            onClick={onAlertDelete}
+                                        >
+                                            Cancelar
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => {
+                                                handleDelete(
+                                                    classification.external_id
+                                                );
+                                                onAlertDelete();
+                                            }}
+                                            className="bg-red-500 hover:bg-red-900"
+                                        >
                                             Continuar
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
@@ -290,17 +381,27 @@ const getColumns = (
     },
 ];
 
-
-export default function Index({ classifications, query_params, status_types }: IClassificationProps) {
-    const [classificationData, setClassificationData] = useState<IClassification[]>(classifications.data);
+export default function Index({
+    classifications,
+    query_params,
+    status_types,
+}: IClassificationProps) {
+    const [classificationData, setClassificationData] = useState<
+        IClassification[]
+    >(classifications.data);
     const statusTypes: ISelectData[] = status_types ?? [];
-    const [currentPage, setCurrentPage] = useState(classifications.current_page);
+    const [currentPage, setCurrentPage] = useState(
+        classifications.current_page
+    );
     const [lastPage, setLastPage] = useState(classifications.last_page);
     const [perPage, setPerPage] = useState(classifications.per_page);
     const [searchValue, setSearchValue] = useState(query_params.search ?? "");
-    const [sort, setSort] = useState<{ column: string; direction: "asc" | "desc" }>({
+    const [sort, setSort] = useState<{
+        column: string;
+        direction: "asc" | "desc";
+    }>({
         column: query_params.sort_column ?? "created_at",
-        direction: (query_params.sort_direction ?? "desc") as "asc" | "desc"
+        direction: (query_params.sort_direction ?? "desc") as "asc" | "desc",
     });
 
     console.log(statusTypes);
@@ -315,7 +416,8 @@ export default function Index({ classifications, query_params, status_types }: I
     const [showFilters, setShowFilters] = useState(false);
 
     const handleSort = (column: string) => {
-        const newDirection: "asc" | "desc" = sort.column === column && sort.direction === "asc" ? "desc" : "asc";
+        const newDirection: "asc" | "desc" =
+            sort.column === column && sort.direction === "asc" ? "desc" : "asc";
         const newSort = { column, direction: newDirection };
         setSort(newSort);
         setCurrentPage(1);
@@ -339,7 +441,7 @@ export default function Index({ classifications, query_params, status_types }: I
         if (query_params.sort_column && query_params.sort_direction) {
             setSort({
                 column: query_params.sort_column,
-                direction: query_params.sort_direction as "asc" | "desc"
+                direction: query_params.sort_direction as "asc" | "desc",
             });
         }
     }, [classifications, query_params]);
@@ -357,23 +459,32 @@ export default function Index({ classifications, query_params, status_types }: I
         sort = { column: "created_at", direction: "desc" as "asc" | "desc" },
         filters = { status: "", category: "", user: "", message: "" }
     ) => {
-        router.get(route('classifications.index'), {
-            page,
-            per_page: perPage,
-            search,
-            sort_column: sort.column,
-            sort_direction: sort.direction,
-            filter_status: filters.status,
-            filter_category: filters.category,
-            filter_user: filters.user,
-            filter_message: filters.message,
-        }, {
-            preserveState: true,
-            replace: true
-        });
+        router.get(
+            route("classifications.index"),
+            {
+                page,
+                per_page: perPage,
+                search,
+                sort_column: sort.column,
+                sort_direction: sort.direction,
+                filter_status: filters.status,
+                filter_category: filters.category,
+                filter_user: filters.user,
+                filter_message: filters.message,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
     };
 
-    const fetchCategories = (page = 1, perPage = 10, search = "", sort = { column: "created_at", direction: "desc" as "asc" | "desc" }) => {
+    const fetchCategories = (
+        page = 1,
+        perPage = 10,
+        search = "",
+        sort = { column: "created_at", direction: "desc" as "asc" | "desc" }
+    ) => {
         const filtersToSend = {
             status: filters.status,
             category: filters.category,
@@ -408,7 +519,12 @@ export default function Index({ classifications, query_params, status_types }: I
     };
 
     const clearFilters = () => {
-        const emptyFilters = { status: "", category: "", user: "", message: "" };
+        const emptyFilters = {
+            status: "",
+            category: "",
+            user: "",
+            message: "",
+        };
         setFilters(emptyFilters);
         setCurrentPage(1);
         fetchCategoriesWithFilters(1, perPage, searchValue, sort, emptyFilters);
@@ -419,22 +535,44 @@ export default function Index({ classifications, query_params, status_types }: I
             <Head title="Lista de Classificações" />
             <div className="flex flex-1 flex-col gap-4 h-full">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">Lista de Classificações</h2>
+                    <h2 className="text-lg font-semibold">
+                        Lista de Classificações
+                    </h2>
 
                     {/* Controles de Filtro - igual ao de empresa */}
                     <div className="flex items-center gap-2">
-                        <Popover open={showFilters} onOpenChange={setShowFilters}>
+                        <Popover
+                            open={showFilters}
+                            onOpenChange={setShowFilters}
+                        >
                             <PopoverTrigger asChild>
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className={`${(filters.status || filters.category || filters.user || filters.message) ? 'border-blue-500 bg-blue-50' : ''}`}
+                                    className={`${
+                                        filters.status ||
+                                        filters.category ||
+                                        filters.user ||
+                                        filters.message
+                                            ? "border-blue-500 bg-blue-50"
+                                            : ""
+                                    }`}
                                 >
                                     <Filter className="w-4 h-4 mr-2" />
                                     Filtros
-                                    {(filters.status || filters.category || filters.user || filters.message) && (
+                                    {(filters.status ||
+                                        filters.category ||
+                                        filters.user ||
+                                        filters.message) && (
                                         <span className="ml-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                                            {[filters.status, filters.category, filters.user, filters.message].filter(Boolean).length}
+                                            {
+                                                [
+                                                    filters.status,
+                                                    filters.category,
+                                                    filters.user,
+                                                    filters.message,
+                                                ].filter(Boolean).length
+                                            }
                                         </span>
                                     )}
                                 </Button>
@@ -442,8 +580,13 @@ export default function Index({ classifications, query_params, status_types }: I
                             <PopoverContent className="w-80" align="end">
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between">
-                                        <h4 className="font-medium">Filtros Avançados</h4>
-                                        {(filters.status || filters.category || filters.user || filters.message) && (
+                                        <h4 className="font-medium">
+                                            Filtros Avançados
+                                        </h4>
+                                        {(filters.status ||
+                                            filters.category ||
+                                            filters.user ||
+                                            filters.message) && (
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
@@ -457,52 +600,110 @@ export default function Index({ classifications, query_params, status_types }: I
 
                                     <div className="space-y-3">
                                         <div>
-                                            <Label htmlFor="filter-status" className="text-sm font-medium">Status</Label>
-                                            <Select
-                                                onValueChange={(val: string) => setFilters(prev => ({ ...prev, status: val === '__all' ? '' : val }))}
-                                                value={filters.status === '' ? '__all' : filters.status}
+                                            <Label
+                                                htmlFor="filter-status"
+                                                className="text-sm font-medium"
                                             >
-                                                <SelectTrigger id="filter-status" className="mt-1">
+                                                Status
+                                            </Label>
+                                            <Select
+                                                onValueChange={(val: string) =>
+                                                    setFilters((prev) => ({
+                                                        ...prev,
+                                                        status:
+                                                            val === "__all"
+                                                                ? ""
+                                                                : val,
+                                                    }))
+                                                }
+                                                value={
+                                                    filters.status === ""
+                                                        ? "__all"
+                                                        : filters.status
+                                                }
+                                            >
+                                                <SelectTrigger
+                                                    id="filter-status"
+                                                    className="mt-1"
+                                                >
                                                     <SelectValue placeholder="Todos" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="__all">Todos</SelectItem>
+                                                    <SelectItem value="__all">
+                                                        Todos
+                                                    </SelectItem>
                                                     {statusTypes.map((st) => (
-                                                        <SelectItem key={st.value} value={st.value}>{st.label}</SelectItem>
+                                                        <SelectItem
+                                                            key={st.value}
+                                                            value={st.value}
+                                                        >
+                                                            {st.label}
+                                                        </SelectItem>
                                                     ))}
                                                 </SelectContent>
                                             </Select>
                                         </div>
 
                                         <div>
-                                            <Label htmlFor="filter-category" className="text-sm font-medium">Categoria</Label>
+                                            <Label
+                                                htmlFor="filter-category"
+                                                className="text-sm font-medium"
+                                            >
+                                                Categoria
+                                            </Label>
                                             <Input
                                                 id="filter-category"
                                                 placeholder="Filtrar por categoria..."
                                                 value={filters.category}
-                                                onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({
+                                                        ...prev,
+                                                        category:
+                                                            e.target.value,
+                                                    }))
+                                                }
                                                 className="mt-1"
                                             />
                                         </div>
 
                                         <div>
-                                            <Label htmlFor="filter-user" className="text-sm font-medium">Usuário</Label>
+                                            <Label
+                                                htmlFor="filter-user"
+                                                className="text-sm font-medium"
+                                            >
+                                                Usuário
+                                            </Label>
                                             <Input
                                                 id="filter-user"
                                                 placeholder="Filtrar por usuário..."
                                                 value={filters.user}
-                                                onChange={(e) => setFilters(prev => ({ ...prev, user: e.target.value }))}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({
+                                                        ...prev,
+                                                        user: e.target.value,
+                                                    }))
+                                                }
                                                 className="mt-1"
                                             />
                                         </div>
 
                                         <div>
-                                            <Label htmlFor="filter-message" className="text-sm font-medium">Mensagem</Label>
+                                            <Label
+                                                htmlFor="filter-message"
+                                                className="text-sm font-medium"
+                                            >
+                                                Mensagem
+                                            </Label>
                                             <Input
                                                 id="filter-message"
                                                 placeholder="Filtrar por mensagem..."
                                                 value={filters.message}
-                                                onChange={(e) => setFilters(prev => ({ ...prev, message: e.target.value }))}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({
+                                                        ...prev,
+                                                        message: e.target.value,
+                                                    }))
+                                                }
                                                 className="mt-1"
                                             />
                                         </div>
@@ -518,7 +719,9 @@ export default function Index({ classifications, query_params, status_types }: I
                                         </Button>
                                         <Button
                                             variant="outline"
-                                            onClick={() => setShowFilters(false)}
+                                            onClick={() =>
+                                                setShowFilters(false)
+                                            }
                                             size="sm"
                                         >
                                             Fechar
