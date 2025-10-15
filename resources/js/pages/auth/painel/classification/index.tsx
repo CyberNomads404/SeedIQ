@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { Head, Link, router } from "@inertiajs/react";
-import { MoreHorizontal, Slash } from "lucide-react";
+import { MoreHorizontal, Slash, Building2, MapPin, User as UserIcon } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 
 import AuthenticatedLayout from "@/layouts/authenticated-layout";
@@ -54,37 +54,24 @@ const getColumns = (
     onSort: (column: string) => void
 ): ColumnDef<any>[] => [
     {
-        accessorKey: "status",
-        header: () => <span className="font-semibold">Status</span>,
-        cell: ({ row }) => {
-            const classification = row.original;
-            const statusColorMap: Record<string, string> = {
-                registered: 'bg-gray-100 text-gray-800',
-                in_progress: 'bg-yellow-100 text-yellow-800',
-                completed: 'bg-green-100 text-green-800',
-                failed: 'bg-red-100 text-red-800',
-                canceled: 'bg-gray-200 text-gray-800',
-            };
-
-            const colorClass = statusColorMap[classification.status] ?? 'bg-gray-100 text-gray-800';
-
-            return (
-                <span className={`px-2 py-0.5 rounded text-sm ${colorClass}`}>
-                    {classification.status_label ?? classification.status}
-                </span>
-            );
-        }
-    },
-    {
         accessorKey: "file_url",
         header: () => <span className="font-semibold">Imagem</span>,
         cell: ({ row }) => {
             const classification = row.original;
-            return classification.file_url ? (
-                <img src={classification.file_url} alt={classification.name} className="w-12 h-8 object-cover rounded" />
-            ) : (
-                <div className="w-12 h-8 bg-muted rounded flex items-center justify-center text-xs text-muted-foreground">
-                    Sem imagem
+            return (
+                <div className="w-32 h-28 flex items-center justify-center bg-gradient-to-br from-muted/50 to-muted/80 rounded-2xl overflow-hidden shadow-md border border-border hover:shadow-lg transition-all duration-300">
+                    {classification.file_url ? (
+                        <img
+                            src={classification.file_url}
+                            alt={classification.name}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                    ) : (
+                        <div className="flex flex-col items-center justify-center text-muted-foreground space-y-2">
+                            <MapPin className="w-8 h-8" />
+                            <span className="text-xs font-medium">Sem imagem</span>
+                        </div>
+                    )}
                 </div>
             );
         }
@@ -108,9 +95,30 @@ const getColumns = (
         },
         cell: ({ row }) => {
             const classification = row.original;
+            const cat = classification.category_for_display;
+            if (!cat) {
+                return (
+                    <div className="flex items-center gap-3 text-muted-foreground min-w-[160px]">
+                        <Building2 className="w-4 h-4" />
+                        <span className="italic text-sm">Não informado</span>
+                    </div>
+                );
+            }
+
             return (
-                <div className="flex items-center gap-2">
-                    <span className="text-sm">{classification.category_for_display?.name ?? '-'}</span>
+                <div className="flex items-center gap-3 min-w-[160px]">
+                    {cat.icon_url ? (
+                        <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
+                            <img src={cat.icon_url} alt={cat.name} className="w-full h-full object-cover" />
+                        </div>
+                    ) : (
+                        <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
+                            <Slash className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                    )}
+                    <div className="text-left flex-1 min-w-0">
+                        <h4 className="font-medium text-foreground text-sm truncate">{cat.name}</h4>
+                    </div>
                 </div>
             );
         }
@@ -127,12 +135,54 @@ const getColumns = (
         cell: ({ row }) => {
             const classification = row.original;
             const user = classification.user_for_display;
-            return user ? (
-                <Link href={route('users.show', user.external_id)} className="text-sm text-blue-600 hover:underline">
-                    {user.name}
-                </Link>
-            ) : (
-                <span className="text-sm">-</span>
+            if (!user) {
+                return <div className="text-sm text-muted-foreground">-</div>;
+            }
+
+            return (
+                <Button
+                    variant="ghost"
+                    className="h-auto p-2 hover:bg-muted/50 transition-colors duration-200 min-w-[180px]"
+                    onClick={() => router.get(route('users.show', { uuid: user.external_id }))}
+                >
+                    <div className="flex items-center gap-3 w-full">
+                        {user.avatar_url ? (
+                            <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
+                                <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                            </div>
+                        ) : (
+                            <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
+                                <UserIcon className="w-4 h-4 text-muted-foreground" />
+                            </div>
+                        )}
+                        <div className="text-left flex-1 min-w-0">
+                            <h4 className="font-medium text-foreground text-sm truncate">{user.name}</h4>
+                            <p className="text-xs text-muted-foreground">Clique para detalhes</p>
+                        </div>
+                    </div>
+                </Button>
+            );
+        }
+    },
+        {
+        accessorKey: "status",
+        header: () => <span className="font-semibold">Status</span>,
+        cell: ({ row }) => {
+            const classification = row.original;
+            const statusColorMap: Record<string, string> = {
+                registered: 'bg-gray-100 text-gray-800',
+                in_progress: 'bg-yellow-100 text-yellow-800',
+                completed: 'bg-green-100 text-green-800',
+                failed: 'bg-red-100 text-red-800',
+                canceled: 'bg-gray-200 text-gray-800',
+            };
+
+            const colorClass = statusColorMap[classification.status] ?? 'bg-gray-100 text-gray-800';
+
+            return (
+                <span className={`px-2 py-0.5 rounded text-sm ${colorClass}`}>
+                    {classification.status_label ?? classification.status}
+                </span>
             );
         }
     },
