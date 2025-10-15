@@ -37,6 +37,14 @@ import { IClassification, IClassificationProps } from "@/interfaces/IClassificat
 import { useHasAnyPermission, useHasPermission } from "@/utils/permissions";
 
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { ISelectData } from "@/interfaces/IRole";
 
 // @ts-ignore
 const route = (window as any).route;
@@ -251,7 +259,7 @@ const getColumns = (
 
 export default function Index({ classifications, query_params, status_types }: IClassificationProps) {
     const [classificationData, setClassificationData] = useState<IClassification[]>(classifications.data);
-    const statusTypes: Array<{ label: string; value: string }> = status_types ?? [];
+    const statusTypes: ISelectData[] = status_types ?? [];
     const [currentPage, setCurrentPage] = useState(classifications.current_page);
     const [lastPage, setLastPage] = useState(classifications.last_page);
     const [perPage, setPerPage] = useState(classifications.per_page);
@@ -260,6 +268,8 @@ export default function Index({ classifications, query_params, status_types }: I
         column: query_params.sort_column ?? "name",
         direction: query_params.sort_direction ?? "asc"
     });
+
+    console.log(statusTypes);
 
     // Filtros
     const [filters, setFilters] = useState({
@@ -414,25 +424,20 @@ export default function Index({ classifications, query_params, status_types }: I
                                     <div className="space-y-3">
                                         <div>
                                             <Label htmlFor="filter-status" className="text-sm font-medium">Status</Label>
-                                            <div className="mt-1 flex flex-wrap gap-2">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setFilters(prev => ({ ...prev, status: '' }))}
-                                                    className={`px-2 py-1 rounded text-sm ${filters.status === '' ? 'bg-blue-500 text-white' : 'bg-muted'}`}
-                                                >
-                                                    Todos
-                                                </button>
-                                                {statusTypes.map((st) => (
-                                                    <button
-                                                        key={st.value}
-                                                        type="button"
-                                                        onClick={() => setFilters(prev => ({ ...prev, status: st.value }))}
-                                                        className={`px-2 py-1 rounded text-sm ${filters.status === st.value ? 'bg-blue-500 text-white' : 'bg-muted'}`}
-                                                    >
-                                                        {st.label}
-                                                    </button>
-                                                ))}
-                                            </div>
+                                            <Select
+                                                onValueChange={(val: string) => setFilters(prev => ({ ...prev, status: val === '__all' ? '' : val }))}
+                                                value={filters.status === '' ? '__all' : filters.status}
+                                            >
+                                                <SelectTrigger id="filter-status" className="mt-1">
+                                                    <SelectValue placeholder="Todos" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="__all">Todos</SelectItem>
+                                                    {statusTypes.map((st) => (
+                                                        <SelectItem key={st.value} value={st.value}>{st.label}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
                                         </div>
 
                                         <div>
