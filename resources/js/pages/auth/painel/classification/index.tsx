@@ -53,16 +53,16 @@ const getColumns = (
     onSort: (column: string) => void
 ): ColumnDef<any>[] => [
     {
-        accessorKey: "name",
+        accessorKey: "status",
         header: ({ column }) => {
-            const isSorted = sort.column === "name";
+            const isSorted = sort.column === "status";
             return (
                 <Button
                     variant="ghost"
                     className="h-auto p-0 font-semibold hover:bg-transparent"
-                    onClick={() => onSort("name")}
+                    onClick={() => onSort("status")}
                 >
-                    Operador(a)
+                    Status
                     {isSorted ? (
                         sort.direction === "asc" ? (
                             <ArrowUp className="ml-2 h-4 w-4" />
@@ -78,18 +78,102 @@ const getColumns = (
         cell: ({ row }) => {
             const classification = row.original;
             return (
-                <div className="flex items-center gap-3">
-                    {classification.icon_url ? (
-                        <img src={classification.icon_url} alt={classification.name} className="w-6 h-6 object-contain rounded" />
-                    ) : (
-                        <div className="w-6 h-6 bg-muted rounded flex items-center justify-center text-sm text-muted-foreground">
-                            <Slash className="w-4 h-4" />
-                        </div>
-                    )}
-                    <span className="font-medium">{classification.name}</span>
+                <span className={`px-2 py-0.5 rounded text-sm ${classification.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                    {classification.status_label ?? classification.status}
+                </span>
+            );
+        }
+    },
+    {
+        accessorKey: "file_url",
+        header: () => <span className="font-semibold">Imagem</span>,
+        cell: ({ row }) => {
+            const classification = row.original;
+            return classification.file_url ? (
+                <img src={classification.file_url} alt={classification.name} className="w-12 h-8 object-cover rounded" />
+            ) : (
+                <div className="w-12 h-8 bg-muted rounded flex items-center justify-center text-xs text-muted-foreground">
+                    Sem imagem
                 </div>
             );
+        }
+    },
+    {
+        accessorKey: "message",
+        header: () => <span className="font-semibold">Mensagem</span>,
+        cell: ({ row }) => {
+            const classification = row.original;
+            return <span className="text-sm text-foreground/90">{classification.message ?? '-'}</span>;
+        }
+    },
+    {
+        id: "category",
+        accessorFn: (row) => row.category_for_display?.name ?? '-',
+        header: ({ column }) => {
+            const isSorted = sort.column === "category";
+            return (
+                <Button
+                    variant="ghost"
+                    className="h-auto p-0 font-semibold hover:bg-transparent"
+                    onClick={() => onSort("category")}
+                >
+                    Categoria
+                    {isSorted ? (
+                        sort.direction === "asc" ? (
+                            <ArrowUp className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ArrowDown className="ml-2 h-4 w-4" />
+                        )
+                    ) : (
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    )}
+                </Button>
+            );
         },
+        cell: ({ row }) => {
+            const classification = row.original;
+            return (
+                <div className="flex items-center gap-2">
+                    <span className="text-sm">{classification.category_for_display?.name ?? '-'}</span>
+                </div>
+            );
+        }
+    },
+    {
+        id: "user",
+        accessorFn: (row) => row.user_for_display?.name ?? '-',
+        header: ({ column }) => {
+            const isSorted = sort.column === "user";
+            return (
+                <Button
+                    variant="ghost"
+                    className="h-auto p-0 font-semibold hover:bg-transparent"
+                    onClick={() => onSort("user")}
+                >
+                    Usuário
+                    {isSorted ? (
+                        sort.direction === "asc" ? (
+                            <ArrowUp className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ArrowDown className="ml-2 h-4 w-4" />
+                        )
+                    ) : (
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    )}
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            const classification = row.original;
+            const user = classification.user_for_display;
+            return user ? (
+                <Link href={route('users.show', user.external_id)} className="text-sm text-blue-600 hover:underline">
+                    {user.name}
+                </Link>
+            ) : (
+                <span className="text-sm">-</span>
+            );
+        }
     },
     {
         id: "actions",
@@ -142,7 +226,7 @@ const getColumns = (
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            Esta ação não pode ser desfeita. Isso excluirá permanentemente esse categoria do sistema.
+                                            Esta ação não pode ser desfeita. Isso excluirá permanentemente esse registro do sistema.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
@@ -175,9 +259,10 @@ export default function Index({ classifications, query_params }: IClassification
 
     // Filtros
     const [filters, setFilters] = useState({
-        name: query_params.filter_name ?? "",
-        parent: query_params.filter_parent ?? "",
-        icon: query_params.filter_icon ?? "",
+        status: query_params.filter_status ?? "",
+        category: query_params.filter_category ?? "",
+        user: query_params.filter_user ?? "",
+        message: query_params.filter_message ?? "",
     });
     const [showFilters, setShowFilters] = useState(false);
 
@@ -198,9 +283,10 @@ export default function Index({ classifications, query_params }: IClassification
         setLastPage(classifications.last_page);
         setPerPage(classifications.per_page);
         setFilters({
-            name: query_params.filter_name ?? "",
-            parent: query_params.filter_parent ?? "",
-            icon: query_params.filter_icon ?? "",
+            status: query_params.filter_status ?? "",
+            category: query_params.filter_category ?? "",
+            user: query_params.filter_user ?? "",
+            message: query_params.filter_message ?? "",
         });
         if (query_params.sort_column && query_params.sort_direction) {
             setSort({
@@ -221,7 +307,7 @@ export default function Index({ classifications, query_params }: IClassification
         perPage = 10,
         search = "",
         sort = { column: "name", direction: "asc" as "asc" | "desc" },
-        filters = { name: "", parent: "", icon: "" }
+        filters = { status: "", category: "", user: "", message: "" }
     ) => {
         router.get(route('classifications.index'), {
             page,
@@ -229,9 +315,10 @@ export default function Index({ classifications, query_params }: IClassification
             search,
             sort_column: sort.column,
             sort_direction: sort.direction,
-            filter_name: filters.name,
-            filter_parent: filters.parent,
-            filter_icon: filters.icon,
+            filter_status: filters.status,
+            filter_category: filters.category,
+            filter_user: filters.user,
+            filter_message: filters.message,
         }, {
             preserveState: true,
             replace: true
@@ -240,9 +327,10 @@ export default function Index({ classifications, query_params }: IClassification
 
     const fetchCategories = (page = 1, perPage = 10, search = "", sort = { column: "name", direction: "asc" as "asc" | "desc" }) => {
         const filtersToSend = {
-            name: filters.name,
-            parent: filters.parent,
-            icon: filters.icon,
+            status: filters.status,
+            category: filters.category,
+            user: filters.user,
+            message: filters.message,
         };
         fetchCategoriesWithFilters(page, perPage, search, sort, filtersToSend);
     };
@@ -272,7 +360,7 @@ export default function Index({ classifications, query_params }: IClassification
     };
 
     const clearFilters = () => {
-        const emptyFilters = { name: "", parent: "", icon: "" };
+        const emptyFilters = { status: "", category: "", user: "", message: "" };
         setFilters(emptyFilters);
         setCurrentPage(1);
         fetchCategoriesWithFilters(1, perPage, searchValue, sort, emptyFilters);
@@ -280,10 +368,10 @@ export default function Index({ classifications, query_params }: IClassification
 
     return (
         <AuthenticatedLayout header="Lista de Categorias">
-            <Head title="Lista de Categorias" />
+            <Head title="Lista de Classificações" />
             <div className="flex flex-1 flex-col gap-4 h-full">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">Lista de Categorias</h2>
+                    <h2 className="text-lg font-semibold">Lista de Classificações</h2>
 
                     {/* Controles de Filtro - igual ao de empresa */}
                     <div className="flex items-center gap-2">
@@ -292,13 +380,13 @@ export default function Index({ classifications, query_params }: IClassification
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className={`${(filters.name || filters.icon || filters.parent) ? 'border-blue-500 bg-blue-50' : ''}`}
+                                    className={`${(filters.status || filters.category || filters.user || filters.message) ? 'border-blue-500 bg-blue-50' : ''}`}
                                 >
                                     <Filter className="w-4 h-4 mr-2" />
                                     Filtros
-                                    {(filters.name || filters.icon || filters.parent) && (
+                                    {(filters.status || filters.category || filters.user || filters.message) && (
                                         <span className="ml-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                                            {[filters.name, filters.icon, filters.parent].filter(Boolean).length}
+                                            {[filters.status, filters.category, filters.user, filters.message].filter(Boolean).length}
                                         </span>
                                     )}
                                 </Button>
@@ -307,7 +395,7 @@ export default function Index({ classifications, query_params }: IClassification
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between">
                                         <h4 className="font-medium">Filtros Avançados</h4>
-                                        {(filters.name || filters.icon || filters.parent) && (
+                                        {(filters.status || filters.category || filters.user || filters.message) && (
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
@@ -321,14 +409,48 @@ export default function Index({ classifications, query_params }: IClassification
 
                                     <div className="space-y-3">
                                         <div>
-                                            <Label htmlFor="filter-name" className="text-sm font-medium">
-                                                Nome da Categoria
-                                            </Label>
+                                            <Label htmlFor="filter-status" className="text-sm font-medium">Status</Label>
+                                            <Select onValueChange={(val) => setFilters(prev => ({ ...prev, status: val }))}>
+                                                <SelectTrigger id="filter-status" className="mt-1">
+                                                    <SelectValue placeholder="Todos" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="">Todos</SelectItem>
+                                                    <SelectItem value="active">Ativo</SelectItem>
+                                                    <SelectItem value="inactive">Inativo</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div>
+                                            <Label htmlFor="filter-category" className="text-sm font-medium">Categoria</Label>
                                             <Input
-                                                id="filter-name"
-                                                placeholder="Filtrar por nome..."
-                                                value={filters.name}
-                                                onChange={(e) => setFilters(prev => ({ ...prev, name: e.target.value }))}
+                                                id="filter-category"
+                                                placeholder="Filtrar por categoria..."
+                                                value={filters.category}
+                                                onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
+                                                className="mt-1"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <Label htmlFor="filter-user" className="text-sm font-medium">Usuário</Label>
+                                            <Input
+                                                id="filter-user"
+                                                placeholder="Filtrar por usuário..."
+                                                value={filters.user}
+                                                onChange={(e) => setFilters(prev => ({ ...prev, user: e.target.value }))}
+                                                className="mt-1"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <Label htmlFor="filter-message" className="text-sm font-medium">Mensagem</Label>
+                                            <Input
+                                                id="filter-message"
+                                                placeholder="Filtrar por mensagem..."
+                                                value={filters.message}
+                                                onChange={(e) => setFilters(prev => ({ ...prev, message: e.target.value }))}
                                                 className="mt-1"
                                             />
                                         </div>

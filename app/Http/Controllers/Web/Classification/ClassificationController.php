@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web\Classification;
 
+use App\Enums\StatusTypeEnum;
 use App\Models\Classification;
 use Inertia\Inertia;
 use App\Http\Controllers\Web\AuthController;
@@ -42,6 +43,7 @@ class ClassificationController extends AuthController
 
         return Inertia::render('auth/painel/classification/index', [
             'classifications' => $classifications,
+            'status_types' => StatusTypeEnum::options(),
             'query_params' => request()->all(),
         ]);
     }

@@ -1,4 +1,5 @@
 import { ICategory } from "./ICategory";
+import { ISelectData } from "./IRole";
 import { IUser } from "./IUser";
 
 interface IClassification {
@@ -34,6 +35,7 @@ interface IClassificationData {
 
 interface IClassificationProps {
     classifications: IClassificationData;
+    status_types: ISelectData[];
     query_params: {
         search?: string;
         [key: string]: any;
