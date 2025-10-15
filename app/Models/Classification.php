@@ -28,8 +28,9 @@ class Classification extends BaseSoftDeleteModel
         return $this->belongsTo(User::class)->withTrashed();
     }
 
-    public function getUserForDisplayAttribute() {
-        return $this->user();
+    public function getUserForDisplayAttribute(): ?User
+    {
+        return $this->user;
     }
 
     public function category()
@@ -37,9 +38,9 @@ class Classification extends BaseSoftDeleteModel
         return $this->belongsTo(Category::class)->withTrashed();
     }
 
-    public function getCategoryForDisplayAttribute(): string
+    public function getCategoryForDisplayAttribute(): ?Category
     {
-        return $this->category();
+        return $this->category;
     }
 
     public function getFileUrlAttribute()
