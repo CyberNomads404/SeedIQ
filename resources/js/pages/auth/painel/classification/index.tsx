@@ -37,13 +37,6 @@ import { IClassification, IClassificationProps } from "@/interfaces/IClassificat
 import { useHasAnyPermission, useHasPermission } from "@/utils/permissions";
 
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 
 // @ts-ignore
 const route = (window as any).route;
@@ -77,8 +70,18 @@ const getColumns = (
         },
         cell: ({ row }) => {
             const classification = row.original;
+            const statusColorMap: Record<string, string> = {
+                registered: 'bg-gray-100 text-gray-800',
+                in_progress: 'bg-yellow-100 text-yellow-800',
+                completed: 'bg-green-100 text-green-800',
+                failed: 'bg-red-100 text-red-800',
+                canceled: 'bg-gray-200 text-gray-800',
+            };
+
+            const colorClass = statusColorMap[classification.status] ?? 'bg-gray-100 text-gray-800';
+
             return (
-                <span className={`px-2 py-0.5 rounded text-sm ${classification.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                <span className={`px-2 py-0.5 rounded text-sm ${colorClass}`}>
                     {classification.status_label ?? classification.status}
                 </span>
             );
@@ -246,8 +249,9 @@ const getColumns = (
 ];
 
 
-export default function Index({ classifications, query_params }: IClassificationProps) {
+export default function Index({ classifications, query_params, status_types }: IClassificationProps) {
     const [classificationData, setClassificationData] = useState<IClassification[]>(classifications.data);
+    const statusTypes: Array<{ label: string; value: string }> = status_types ?? [];
     const [currentPage, setCurrentPage] = useState(classifications.current_page);
     const [lastPage, setLastPage] = useState(classifications.last_page);
     const [perPage, setPerPage] = useState(classifications.per_page);
@@ -410,16 +414,25 @@ export default function Index({ classifications, query_params }: IClassification
                                     <div className="space-y-3">
                                         <div>
                                             <Label htmlFor="filter-status" className="text-sm font-medium">Status</Label>
-                                            <Select onValueChange={(val) => setFilters(prev => ({ ...prev, status: val }))}>
-                                                <SelectTrigger id="filter-status" className="mt-1">
-                                                    <SelectValue placeholder="Todos" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="">Todos</SelectItem>
-                                                    <SelectItem value="active">Ativo</SelectItem>
-                                                    <SelectItem value="inactive">Inativo</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                            <div className="mt-1 flex flex-wrap gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setFilters(prev => ({ ...prev, status: '' }))}
+                                                    className={`px-2 py-1 rounded text-sm ${filters.status === '' ? 'bg-blue-500 text-white' : 'bg-muted'}`}
+                                                >
+                                                    Todos
+                                                </button>
+                                                {statusTypes.map((st) => (
+                                                    <button
+                                                        key={st.value}
+                                                        type="button"
+                                                        onClick={() => setFilters(prev => ({ ...prev, status: st.value }))}
+                                                        className={`px-2 py-1 rounded text-sm ${filters.status === st.value ? 'bg-blue-500 text-white' : 'bg-muted'}`}
+                                                    >
+                                                        {st.label}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
 
                                         <div>

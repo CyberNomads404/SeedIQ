@@ -46,8 +46,4 @@ interface IClassificationProps {
     };
 }
 
-export type {
-    IClassification,
-    IClassificationData,
-    IClassificationProps,
-};
+export type { IClassification, IClassificationData, IClassificationProps };
