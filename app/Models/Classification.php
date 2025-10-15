@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StatusTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 
 class Classification extends BaseSoftDeleteModel
@@ -18,6 +19,8 @@ class Classification extends BaseSoftDeleteModel
     protected $appends = [
         'category_for_display',
         'file_url',
+        'status_label',
+        'user_for_display',
     ];
 
     public function user()
@@ -25,14 +28,19 @@ class Classification extends BaseSoftDeleteModel
         return $this->belongsTo(User::class)->withTrashed();
     }
 
+    public function getUserForDisplayAttribute(): ?User
+    {
+        return $this->user;
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class)->withTrashed();
     }
 
-    public function getCategoryForDisplayAttribute(): string
+    public function getCategoryForDisplayAttribute(): ?Category
     {
-        return $this->category();
+        return $this->category;
     }
 
     public function getFileUrlAttribute()
@@ -41,7 +49,12 @@ class Classification extends BaseSoftDeleteModel
         return rtrim($baseUrl, '/') . '/' . ltrim($this->file, '/');
     }
 
-    public function classificationResult()
+    public function getStatusLabelAttribute()
+    {
+        return StatusTypeEnum::getLabel($this->status) ?? $this->status;
+    }
+
+    public function result()
     {
         return $this->hasOne(ClassificationResult::class);
     }

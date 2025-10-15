@@ -3,19 +3,16 @@ import { useDropzone } from "react-dropzone";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type AvatarUploadProps = {
+type FileUploadProps = {
   value?: File | string;
   onChange: (file: File | null) => void;
   shape?: "circle" | "rounded";
-  /** Accept array of mime types or extensions (e.g. ['image/*', '.svg', 'image/svg+xml']) */
   accept?: string[];
-  /** Maximum file size in bytes */
   maxSize?: number;
 };
 
-const AvatarUpload: React.FC<AvatarUploadProps> = ({ value, onChange, shape = "circle", accept, maxSize }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ value, onChange, shape = "circle", accept, maxSize }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-
   const [error, setError] = React.useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(
     typeof value === "string" ? value : null
@@ -38,25 +35,22 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ value, onChange, shape = "c
     const record: Record<string, string[]> = {};
     acceptList.forEach((a: string) => {
       if (a.startsWith('.')) {
-        // map some common extensions to mime types
         if (a === '.svg') record['image/svg+xml'] = record['image/svg+xml'] || [], record['image/svg+xml'].push('.svg');
         else if (a === '.png') record['image/png'] = record['image/png'] || [], record['image/png'].push('.png');
         else if (a === '.jpg' || a === '.jpeg') record['image/jpeg'] = record['image/jpeg'] || [], record['image/jpeg'].push(a);
         else record['application/octet-stream'] = record['application/octet-stream'] || [], record['application/octet-stream'].push(a);
       } else if (a.includes('/')) {
-        // mime type
         record[a] = record[a] || [];
       } else if (a.endsWith('/*')) {
         record[a.replace('/*', '/*')] = record[a.replace('/*', '/*')] || [];
       } else {
-        // fallback to mime key
         record[a] = record[a] || [];
       }
     });
     return record;
   };
 
-  const validateFile = (file: File) => {
+  const validateFile = (file: File, accept?: string[], maxSize?: number) => {
     setError(null);
     if (maxSize && file.size > maxSize) {
       setError(`Arquivo muito grande. Tamanho máximo: ${Math.round((maxSize / 1024) * 100) / 100} KB`);
@@ -78,12 +72,12 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ value, onChange, shape = "c
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-  accept: buildAccept(accept),
+    accept: buildAccept(accept),
     multiple: false,
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0];
       if (!file) return;
-      if (!validateFile(file)) {
+      if (!validateFile(file, accept, maxSize)) {
         onChange(null);
         return;
       }
@@ -103,10 +97,10 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ value, onChange, shape = "c
     <div className="flex flex-col items-center gap-2">
       <div {...getRootProps({ className: previewClasses })}>
         <input {...getInputProps()} />
-        {previewUrl ? (
+        {value ? (
           <>
             <img
-              src={previewUrl}
+              src={typeof value === "string" ? value : value ? URL.createObjectURL(value) : undefined}
               alt="Avatar Preview"
               className="w-full h-full object-cover"
             />
@@ -127,8 +121,6 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ value, onChange, shape = "c
           </p>
         )}
       </div>
-
-      {error && <p className="text-destructive text-sm mt-1">{error}</p>}
 
       <input
         type="file"
@@ -151,4 +143,4 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ value, onChange, shape = "c
   );
 };
 
-export default AvatarUpload;
+export default FileUpload;

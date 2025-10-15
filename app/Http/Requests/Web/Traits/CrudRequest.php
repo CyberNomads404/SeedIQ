@@ -94,5 +94,20 @@ abstract class CrudRequest extends FormRequest
 
             return false;
         });
+
+        $validator->addExtension('string_or_file', function ($attribute, $value, $parameters, $validator) {
+            // Verifica se o valor é uma string
+            if (is_string($value)) {
+                return true;
+            }
+
+            // Verifica se o valor é uma instância de UploadedFile (arquivo)
+            if ($value instanceof \Illuminate\Http\UploadedFile && $value->isValid()) {
+                // Adicione aqui quaisquer outras validações específicas para arquivos, se necessário
+                return true;
+            }
+
+            return false;
+        });
     }
 }

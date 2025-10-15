@@ -47,6 +47,8 @@ class RolesAndPermissionsSeeder extends Seeder
                     'web' => 'Authorization Panel Access',
                 ]
             ],
+            'categories' => ['list', 'create', 'edit', 'delete'],
+            'classifications' => ['list', 'edit', 'delete'],
         ]);
 
         $this->createRoleWithPermissions(ActiveRoleUserEnum::OPERATOR->value, [
@@ -55,6 +57,8 @@ class RolesAndPermissionsSeeder extends Seeder
                     'mobile' => 'Authorization Panel Access',
                 ]
             ],
+            'categories' => ['list'],
+            'classifications' => ['list', 'create', 'edit', 'delete'],
         ]);
     }
 
