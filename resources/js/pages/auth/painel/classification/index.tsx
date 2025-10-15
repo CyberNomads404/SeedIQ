@@ -55,27 +55,7 @@ const getColumns = (
 ): ColumnDef<any>[] => [
     {
         accessorKey: "status",
-        header: ({ column }) => {
-            const isSorted = sort.column === "status";
-            return (
-                <Button
-                    variant="ghost"
-                    className="h-auto p-0 font-semibold hover:bg-transparent"
-                    onClick={() => onSort("status")}
-                >
-                    Status
-                    {isSorted ? (
-                        sort.direction === "asc" ? (
-                            <ArrowUp className="ml-2 h-4 w-4" />
-                        ) : (
-                            <ArrowDown className="ml-2 h-4 w-4" />
-                        )
-                    ) : (
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    )}
-                </Button>
-            );
-        },
+        header: () => <span className="font-semibold">Status</span>,
         cell: ({ row }) => {
             const classification = row.original;
             const statusColorMap: Record<string, string> = {
@@ -157,6 +137,40 @@ const getColumns = (
         }
     },
     {
+        accessorKey: "created_at",
+        header: ({ column }) => {
+            const isSorted = sort.column === "created_at";
+            return (
+                <Button
+                    variant="ghost"
+                    className="h-auto p-0 font-semibold hover:bg-transparent"
+                    onClick={() => onSort("created_at")}
+                >
+                    Criado em
+                    {isSorted ? (
+                        sort.direction === "asc" ? (
+                            <ArrowUp className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ArrowDown className="ml-2 h-4 w-4" />
+                        )
+                    ) : (
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    )}
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            const classification = row.original;
+            const value = classification.created_at;
+            try {
+                const d = new Date(value);
+                return <span className="text-sm">{isNaN(d.getTime()) ? value : d.toLocaleString()}</span>;
+            } catch {
+                return <span className="text-sm">{value ?? '-'}</span>;
+            }
+        }
+    },
+    {
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
@@ -235,8 +249,8 @@ export default function Index({ classifications, query_params, status_types }: I
     const [perPage, setPerPage] = useState(classifications.per_page);
     const [searchValue, setSearchValue] = useState(query_params.search ?? "");
     const [sort, setSort] = useState<{ column: string; direction: "asc" | "desc" }>({
-        column: query_params.sort_column ?? "name",
-        direction: query_params.sort_direction ?? "asc"
+        column: query_params.sort_column ?? "created_at",
+        direction: (query_params.sort_direction ?? "desc") as "asc" | "desc"
     });
 
     console.log(statusTypes);
@@ -290,7 +304,7 @@ export default function Index({ classifications, query_params, status_types }: I
         page = 1,
         perPage = 10,
         search = "",
-        sort = { column: "name", direction: "asc" as "asc" | "desc" },
+        sort = { column: "created_at", direction: "desc" as "asc" | "desc" },
         filters = { status: "", category: "", user: "", message: "" }
     ) => {
         router.get(route('classifications.index'), {
@@ -309,7 +323,7 @@ export default function Index({ classifications, query_params, status_types }: I
         });
     };
 
-    const fetchCategories = (page = 1, perPage = 10, search = "", sort = { column: "name", direction: "asc" as "asc" | "desc" }) => {
+    const fetchCategories = (page = 1, perPage = 10, search = "", sort = { column: "created_at", direction: "desc" as "asc" | "desc" }) => {
         const filtersToSend = {
             status: filters.status,
             category: filters.category,
