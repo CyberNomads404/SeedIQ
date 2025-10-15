@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\Classification;
 
+use App\Http\Resources\Api\Category\CategoryResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +21,7 @@ class ClassificationResource extends JsonResource
             'status_label' => $this->status_label,
             'message' => $this->message,
             'file_url' => $this->file_url,
-            'category_for_display' => $this->category_for_display,
+            'category_for_display' => new CategoryResource($this->category_for_display),
             'result' => $this->whenLoaded('result', function () {
                 return new ClassificationResultResource($this->result);
             }),

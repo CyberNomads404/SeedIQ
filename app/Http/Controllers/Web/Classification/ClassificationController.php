@@ -14,8 +14,8 @@ class ClassificationController extends AuthController
     public function index()
     {
         $perPage = request()->get('per_page', 10);
-        $sortColumn = request()->get('sort_column', 'name');
-        $sortDirection = request()->get('sort_direction', 'asc');
+        $sortColumn = request()->get('sort_column', 'created_at');
+        $sortDirection = request()->get('sort_direction', 'desc');
 
         $filterCategories= request()->get('filter_category', '');
         $filterStatus = request()->get('filter_status', '');
@@ -28,7 +28,7 @@ class ClassificationController extends AuthController
         }
 
         if (!in_array($sortDirection, ['asc', 'desc'])) {
-            $sortDirection = 'asc';
+            $sortDirection = 'desc';
         }
 
         $classifications = $this->model::query()

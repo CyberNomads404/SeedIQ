@@ -14,4 +14,5 @@ Route::prefix('auth')->middleware(['auth:sanctum', 'check.access.token'])->group
 
 Route::middleware(['auth:sanctum', 'check.access.token'])->group(function () {
     require __DIR__.'/categories/routes.php';
+    require __DIR__.'/classifications/routes.php';
 });
