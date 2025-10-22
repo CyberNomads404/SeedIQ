@@ -17,6 +17,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->string('external_id')->unique();
             $table->string('name');
+            $table->string('tag')->unique();
             $table->string('icon')->nullable();
         });
     }

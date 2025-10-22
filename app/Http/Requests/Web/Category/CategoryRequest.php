@@ -16,6 +16,7 @@ class CategoryRequest extends CrudRequest
     {
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'tag' => ['sometimes', 'required', 'string', 'max:255'],
             'icon' => ['sometimes', 'nullable', 'string_or_file'],
         ];
     }
@@ -27,6 +28,7 @@ class CategoryRequest extends CrudRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'tag' => ['required', 'string', 'max:255'],
             'icon' => ['nullable', 'string_or_file'],
 
         ];

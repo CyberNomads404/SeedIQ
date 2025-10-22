@@ -19,6 +19,4 @@ class CategoryController extends AuthController
             'categories' => CategoryResource::collection($categories),
         ]);
     }
-
-
 }

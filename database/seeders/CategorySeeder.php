@@ -16,16 +16,18 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         Category::updateOrCreate(
-            ['name' => 'Milho'],
+            ['tag' => 'corn'],
             [
+                'name' => "Milho",
                 'external_id' => Str::uuid()->toString(),
                 'icon' => 'categories/r0Mi3t3QGJe55ReYnSQSdeSbkxwpue7lvqpPZjNE.svg',
             ]
         );
 
         Category::updateOrCreate(
-            ['name' => 'Soja'],
+            ['tag' => 'soy'],
             [
+                'name' => "Soja",
                 'external_id' => Str::uuid()->toString(),
                 'icon' => 'categories/EFT451trxOKZBbOSmM8saNAntFvU1ZHPCe6VuEAY.svg',
             ]

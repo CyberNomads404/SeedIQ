@@ -20,8 +20,9 @@ class CategoryController extends AuthController
 
         // Filtros
         $filterName = request()->get('filter_name', '');
+        $filterTag = request()->get('filter_tag', '');
 
-        $allowedSortColumns = ['name', 'created_at', 'updated_at'];
+        $allowedSortColumns = ['name', 'tag', 'created_at', 'updated_at'];
         if (!in_array($sortColumn, $allowedSortColumns)) {
             $sortColumn = 'name';
         }
@@ -32,6 +33,7 @@ class CategoryController extends AuthController
         $categories = $this->model::query()
             ->when($search, fn($q) => $q->where('name', 'like', "%$search%"))
             ->when($filterName, fn($q) => $q->where('name', 'like', "%$filterName%"))
+            ->when($filterTag, fn($q) => $q->where("tag", "like", "%$filterTag%"))
             ->orderBy($sortColumn, $sortDirection)
             ->paginate($perPage);
 

@@ -7,6 +7,7 @@ class Category extends BaseSoftDeleteModel
     protected $fillable = [
         'external_id',
         'name',
+        'tag',
         'icon',
     ];
 
