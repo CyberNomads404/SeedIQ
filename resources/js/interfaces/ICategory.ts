@@ -4,6 +4,7 @@ import { categoryFormSchema } from "@/schemas/form-category-schema";
 interface ICategory {
     external_id: string;
     name: string;
+    tag: string;
     icon?: string;
     icon_url?: string;
 }

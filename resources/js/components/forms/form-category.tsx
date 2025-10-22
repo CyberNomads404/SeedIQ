@@ -47,6 +47,7 @@ export const CategoryFormDialog: React.FC<ICategoryFormDialogProps> = ({
         resolver: zodResolver(categoryFormSchema),
         defaultValues: {
             name: data?.name || "",
+            tag: data?.tag || "",
             icon: data?.icon_url || null,
         },
     });
@@ -98,6 +99,7 @@ export const CategoryFormDialog: React.FC<ICategoryFormDialogProps> = ({
                                 maxSize={204800} // 200 KB
                             />
                         </div>
+
                         <div className="grid grid-cols-1 items-start gap-3">
                             <Label
                                 htmlFor="name"
@@ -117,6 +119,29 @@ export const CategoryFormDialog: React.FC<ICategoryFormDialogProps> = ({
                             {"name" in form.formState.errors && (
                                 <p className="text-destructive text-sm">
                                     {form.formState.errors.name?.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="grid grid-cols-1 items-start gap-3">
+                            <Label
+                                htmlFor="tag"
+                                className={
+                                    form.formState.errors.tag
+                                        ? "text-destructive"
+                                        : undefined
+                                }
+                            >
+                                Tag
+                            </Label>
+                            <Input
+                                id="tag"
+                                placeholder="Digite a tag"
+                                {...form.register("tag")}
+                            />
+                            {"tag" in form.formState.errors && (
+                                <p className="text-destructive text-sm">
+                                    {form.formState.errors.tag?.message}
                                 </p>
                             )}
                         </div>

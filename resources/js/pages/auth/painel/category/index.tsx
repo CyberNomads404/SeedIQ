@@ -38,25 +38,15 @@ import { CategoryFormDialog } from "@/components/forms/form-category";
 import { ICategory, ICategoryProps } from "@/interfaces/ICategory";
 import { categoryFormSchema } from "@/schemas/form-category-schema";
 import { useHasAnyPermission, useHasPermission } from "@/utils/permissions";
-import { IRoleForCreateOptions } from "@/interfaces/ISelect";
 
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 
-// @ts-ignore
 const route = (window as any).route;
 
 const getColumns = (
     sort: { column: string; direction: "asc" | "desc" },
     onSort: (column: string) => void
 ): ColumnDef<any>[] => [
-    // ...existing code...
     {
         accessorKey: "name",
         header: ({ column }) => {
@@ -64,7 +54,7 @@ const getColumns = (
             return (
                 <Button
                     variant="ghost"
-                    className="h-auto p-0 font-semibold hover:bg-transparent"
+                    className="h-auto p-0 font-semibold hover:bg-transtag"
                     onClick={() => onSort("name")}
                 >
                     Nome
@@ -85,7 +75,11 @@ const getColumns = (
             return (
                 <div className="flex items-center gap-3">
                     {category.icon_url ? (
-                        <img src={category.icon_url} alt={category.name} className="w-6 h-6 object-contain rounded" />
+                        <img
+                            src={category.icon_url}
+                            alt={category.name}
+                            className="w-6 h-6 object-contain rounded"
+                        />
                     ) : (
                         <div className="w-6 h-6 bg-muted rounded flex items-center justify-center text-sm text-muted-foreground">
                             <Slash className="w-4 h-4" />
@@ -97,32 +91,74 @@ const getColumns = (
         },
     },
     {
+        accessorKey: "tag",
+        header: ({ column }) => {
+            const isSorted = sort.column === "tag";
+            return (
+                <Button
+                    variant="ghost"
+                    className="h-auto p-0 font-semibold hover:bg-transtag"
+                    onClick={() => onSort("tag")}
+                >
+                    Tag
+                    {isSorted ? (
+                        sort.direction === "asc" ? (
+                            <ArrowUp className="ml-2 h-4 w-4" />
+                        ) : (
+                            <ArrowDown className="ml-2 h-4 w-4" />
+                        )
+                    ) : (
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    )}
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            const category = row.original;
+            return (
+                <div className="flex items-center gap-3">
+                    <span className="font-medium">{category.tag}</span>
+                </div>
+            );
+        },
+    },
+    {
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
             const category = row.original;
 
-            const [isOpenAlertDelete, setIsOpenAlertDelete] = useState<boolean>(false);
-            const onAlertDelete = () => setIsOpenAlertDelete(!isOpenAlertDelete);
+            const [isOpenAlertDelete, setIsOpenAlertDelete] =
+                useState<boolean>(false);
+            const onAlertDelete = () =>
+                setIsOpenAlertDelete(!isOpenAlertDelete);
 
-            const [isOpenUpdateForm, setIsOpenUpdateForm] = useState<boolean>(false);
+            const [isOpenUpdateForm, setIsOpenUpdateForm] =
+                useState<boolean>(false);
             const onUpdate = () => setIsOpenUpdateForm(!isOpenUpdateForm);
 
-            const handleUpdate = (values: z.infer<typeof categoryFormSchema>, external_id?: string) => {
-                router.post(route('categories.update', external_id), {...values, _method: 'PUT'}, {
-                    preserveState: true,
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        onUpdate();
-                    },
-                    onError: (errors) => {
-                        console.error(errors);
-                    },
-                });
+            const handleUpdate = (
+                values: z.infer<typeof categoryFormSchema>,
+                external_id?: string
+            ) => {
+                router.post(
+                    route("categories.update", external_id),
+                    { ...values, _method: "PUT" },
+                    {
+                        preserveState: true,
+                        preserveScroll: true,
+                        onSuccess: () => {
+                            onUpdate();
+                        },
+                        onError: (errors) => {
+                            console.error(errors);
+                        },
+                    }
+                );
             };
 
             const handleDelete = (external_id: string) => {
-                router.delete(route('categories.destroy', external_id), {
+                router.delete(route("categories.destroy", external_id), {
                     preserveState: true,
                     preserveScroll: true,
                 });
@@ -130,11 +166,17 @@ const getColumns = (
 
             return (
                 <>
-                    {useHasAnyPermission(['categories_edit', 'categories_delete']) && (
+                    {useHasAnyPermission([
+                        "categories_edit",
+                        "categories_delete",
+                    ]) && (
                         <div className="flex items-center justify-end gap-2">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="h-8 w-8 p-0">
+                                    <Button
+                                        variant="ghost"
+                                        className="h-8 w-8 p-0"
+                                    >
                                         <span className="sr-only">Opções</span>
                                         <MoreHorizontal />
                                     </Button>
@@ -148,7 +190,9 @@ const getColumns = (
                                     )}
                                     <DropdownMenuSeparator />
                                     {useHasPermission("categories_delete") && (
-                                        <DropdownMenuItem onClick={onAlertDelete}>
+                                        <DropdownMenuItem
+                                            onClick={onAlertDelete}
+                                        >
                                             Deletar
                                         </DropdownMenuItem>
                                     )}
@@ -159,14 +203,30 @@ const getColumns = (
                             <AlertDialog open={isOpenAlertDelete}>
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
-                                        <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
+                                        <AlertDialogTitle>
+                                            Você tem certeza absoluta?
+                                        </AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            Esta ação não pode ser desfeita. Isso excluirá permanentemente esse categoria do sistema.
+                                            Esta ação não pode ser desfeita.
+                                            Isso excluirá permanentemente esse
+                                            categoria do sistema.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                        <AlertDialogCancel onClick={onAlertDelete}>Cancelar</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => { handleDelete(category.external_id); onAlertDelete() }} className="bg-red-500 hover:bg-red-900">
+                                        <AlertDialogCancel
+                                            onClick={onAlertDelete}
+                                        >
+                                            Cancelar
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => {
+                                                handleDelete(
+                                                    category.external_id
+                                                );
+                                                onAlertDelete();
+                                            }}
+                                            className="bg-red-500 hover:bg-red-900"
+                                        >
                                             Continuar
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
@@ -188,28 +248,33 @@ const getColumns = (
     },
 ];
 
-
 export default function Index({ categories, query_params }: ICategoryProps) {
-    const [categoryData, setCategoryData] = useState<ICategory[]>(categories.data);
+    const [categoryData, setCategoryData] = useState<ICategory[]>(
+        categories.data
+    );
     const [currentPage, setCurrentPage] = useState(categories.current_page);
     const [lastPage, setLastPage] = useState(categories.last_page);
     const [perPage, setPerPage] = useState(categories.per_page);
     const [searchValue, setSearchValue] = useState(query_params.search ?? "");
-    const [sort, setSort] = useState<{ column: string; direction: "asc" | "desc" }>({
+    const [sort, setSort] = useState<{
+        column: string;
+        direction: "asc" | "desc";
+    }>({
         column: query_params.sort_column ?? "name",
-        direction: query_params.sort_direction ?? "asc"
+        direction: query_params.sort_direction ?? "asc",
     });
 
     // Filtros
     const [filters, setFilters] = useState({
         name: query_params.filter_name ?? "",
-        parent: query_params.filter_parent ?? "",
+        tag: query_params.filter_tag ?? "",
         icon: query_params.filter_icon ?? "",
     });
     const [showFilters, setShowFilters] = useState(false);
 
     const handleSort = (column: string) => {
-        const newDirection: "asc" | "desc" = sort.column === column && sort.direction === "asc" ? "desc" : "asc";
+        const newDirection: "asc" | "desc" =
+            sort.column === column && sort.direction === "asc" ? "desc" : "asc";
         const newSort = { column, direction: newDirection };
         setSort(newSort);
         setCurrentPage(1);
@@ -226,13 +291,13 @@ export default function Index({ categories, query_params }: ICategoryProps) {
         setPerPage(categories.per_page);
         setFilters({
             name: query_params.filter_name ?? "",
-            parent: query_params.filter_parent ?? "",
+            tag: query_params.filter_tag ?? "",
             icon: query_params.filter_icon ?? "",
         });
         if (query_params.sort_column && query_params.sort_direction) {
             setSort({
                 column: query_params.sort_column,
-                direction: query_params.sort_direction as "asc" | "desc"
+                direction: query_params.sort_direction as "asc" | "desc",
             });
         }
     }, [categories, query_params]);
@@ -248,27 +313,36 @@ export default function Index({ categories, query_params }: ICategoryProps) {
         perPage = 10,
         search = "",
         sort = { column: "name", direction: "asc" as "asc" | "desc" },
-        filters = { name: "", parent: "", icon: "" }
+        filters = { name: "", tag: "", icon: "" }
     ) => {
-        router.get(route('categories.index'), {
-            page,
-            per_page: perPage,
-            search,
-            sort_column: sort.column,
-            sort_direction: sort.direction,
-            filter_name: filters.name,
-            filter_parent: filters.parent,
-            filter_icon: filters.icon,
-        }, {
-            preserveState: true,
-            replace: true
-        });
+        router.get(
+            route("categories.index"),
+            {
+                page,
+                per_page: perPage,
+                search,
+                sort_column: sort.column,
+                sort_direction: sort.direction,
+                filter_name: filters.name,
+                filter_tag: filters.tag,
+                filter_icon: filters.icon,
+            },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
     };
 
-    const fetchCategories = (page = 1, perPage = 10, search = "", sort = { column: "name", direction: "asc" as "asc" | "desc" }) => {
+    const fetchCategories = (
+        page = 1,
+        perPage = 10,
+        search = "",
+        sort = { column: "name", direction: "asc" as "asc" | "desc" }
+    ) => {
         const filtersToSend = {
             name: filters.name,
-            parent: filters.parent,
+            tag: filters.tag,
             icon: filters.icon,
         };
         fetchCategoriesWithFilters(page, perPage, search, sort, filtersToSend);
@@ -299,17 +373,19 @@ export default function Index({ categories, query_params }: ICategoryProps) {
     };
 
     const clearFilters = () => {
-        const emptyFilters = { name: "", parent: "", icon: "" };
+        const emptyFilters = { name: "", tag: "", icon: "" };
         setFilters(emptyFilters);
         setCurrentPage(1);
         fetchCategoriesWithFilters(1, perPage, searchValue, sort, emptyFilters);
     };
 
-    const [isOpenAddCategoryForm, setIsOpenAddCategoryForm] = useState<boolean>(false);
-    const onAddCategory = () => setIsOpenAddCategoryForm(!isOpenAddCategoryForm);
+    const [isOpenAddCategoryForm, setIsOpenAddCategoryForm] =
+        useState<boolean>(false);
+    const onAddCategory = () =>
+        setIsOpenAddCategoryForm(!isOpenAddCategoryForm);
 
     const handleSubmit = (values: z.infer<typeof categoryFormSchema>) => {
-        router.post(route('categories.store'), values, {
+        router.post(route("categories.store"), values, {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => {
@@ -323,22 +399,41 @@ export default function Index({ categories, query_params }: ICategoryProps) {
             <Head title="Lista de Categorias" />
             <div className="flex flex-1 flex-col gap-4 h-full">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">Lista de Categorias</h2>
+                    <h2 className="text-lg font-semibold">
+                        Lista de Categorias
+                    </h2>
 
                     {/* Controles de Filtro - igual ao de empresa */}
                     <div className="flex items-center gap-2">
-                        <Popover open={showFilters} onOpenChange={setShowFilters}>
+                        <Popover
+                            open={showFilters}
+                            onOpenChange={setShowFilters}
+                        >
                             <PopoverTrigger asChild>
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className={`${(filters.name || filters.icon || filters.parent) ? 'border-blue-500 bg-blue-50' : ''}`}
+                                    className={`${
+                                        filters.name ||
+                                        filters.icon ||
+                                        filters.tag
+                                            ? "border-blue-500 bg-blue-50"
+                                            : ""
+                                    }`}
                                 >
                                     <Filter className="w-4 h-4 mr-2" />
                                     Filtros
-                                    {(filters.name || filters.icon || filters.parent) && (
+                                    {(filters.name ||
+                                        filters.icon ||
+                                        filters.tag) && (
                                         <span className="ml-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                                            {[filters.name, filters.icon, filters.parent].filter(Boolean).length}
+                                            {
+                                                [
+                                                    filters.name,
+                                                    filters.icon,
+                                                    filters.tag,
+                                                ].filter(Boolean).length
+                                            }
                                         </span>
                                     )}
                                 </Button>
@@ -346,8 +441,12 @@ export default function Index({ categories, query_params }: ICategoryProps) {
                             <PopoverContent className="w-80" align="end">
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between">
-                                        <h4 className="font-medium">Filtros Avançados</h4>
-                                        {(filters.name || filters.icon || filters.parent) && (
+                                        <h4 className="font-medium">
+                                            Filtros Avançados
+                                        </h4>
+                                        {(filters.name ||
+                                            filters.icon ||
+                                            filters.tag) && (
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
@@ -361,14 +460,45 @@ export default function Index({ categories, query_params }: ICategoryProps) {
 
                                     <div className="space-y-3">
                                         <div>
-                                            <Label htmlFor="filter-name" className="text-sm font-medium">
+                                            <Label
+                                                htmlFor="filter-name"
+                                                className="text-sm font-medium"
+                                            >
                                                 Nome da Categoria
                                             </Label>
                                             <Input
                                                 id="filter-name"
                                                 placeholder="Filtrar por nome..."
                                                 value={filters.name}
-                                                onChange={(e) => setFilters(prev => ({ ...prev, name: e.target.value }))}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({
+                                                        ...prev,
+                                                        name: e.target.value,
+                                                    }))
+                                                }
+                                                className="mt-1"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <div>
+                                            <Label
+                                                htmlFor="filter-tag"
+                                                className="text-sm font-medium"
+                                            >
+                                                Tag da Categoria
+                                            </Label>
+                                            <Input
+                                                id="filter-tag"
+                                                placeholder="Filtrar por tag..."
+                                                value={filters.tag}
+                                                onChange={(e) =>
+                                                    setFilters((prev) => ({
+                                                        ...prev,
+                                                        tag: e.target.value,
+                                                    }))
+                                                }
                                                 className="mt-1"
                                             />
                                         </div>
@@ -384,7 +514,9 @@ export default function Index({ categories, query_params }: ICategoryProps) {
                                         </Button>
                                         <Button
                                             variant="outline"
-                                            onClick={() => setShowFilters(false)}
+                                            onClick={() =>
+                                                setShowFilters(false)
+                                            }
                                             size="sm"
                                         >
                                             Fechar
