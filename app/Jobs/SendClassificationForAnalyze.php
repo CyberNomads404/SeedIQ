@@ -82,18 +82,28 @@ class SendClassificationForAnalyze implements ShouldQueue
 
         $host = $parts['host'];
 
-        if (! in_array($host, ['localhost', '127.0.0.1'], true)) {
+        $isLocalHost = in_array($host, ['localhost', '127.0.0.1'], true)
+            || $host === '172.17.0.1';
+
+        if (! $isLocalHost) {
             return $url;
+        }
+
+        $inDocker = (bool) (getenv('LARAVEL_SAIL') ?: getenv('IN_DOCKER') ?: file_exists('/.dockerenv'));
+
+        if ($inDocker) {
+            $replaceHost = getenv('API_SERVICE_HOST') ?: 'laravel.test';
+            $replacePort = getenv('API_SERVICE_PORT') ?: '80';
+        } else {
+            $replaceHost = $host;
+            $replacePort = $parts['port'] ?? '';
         }
 
         $scheme = $parts['scheme'] ?? 'http';
         $path = $parts['path'] ?? '/';
         $query = isset($parts['query']) ? ('?' . $parts['query']) : '';
-
-        $replaceHost = getenv('API_SERVICE_HOST') ?: '172.17.0.1';
-        $replacePort = getenv('API_SERVICE_PORT') ?: '80';
-
         $portPart = $replacePort ? ':' . $replacePort : '';
+
         return sprintf('%s://%s%s%s%s', $scheme, $replaceHost, $portPart, $path, $query);
     }
 }
