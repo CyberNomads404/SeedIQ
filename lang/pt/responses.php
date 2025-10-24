@@ -23,6 +23,21 @@ return [
         'get_types_success' => 'Tipos de feedback recuperados com sucesso.',
     ],
 
+    'category' => [
+        'list_success' => 'Categorias recuperadas com sucesso.',
+    ],
+
+    'classification' => [
+        'list_success' => 'Classificações recuperadas com sucesso.',
+        'get_status_success' => 'Status de classificações recuperados com sucesso.',
+        'create_success' => 'Classificação criada com sucesso.',
+        'get_success' => 'Classificação recuperada com sucesso.',
+    ],
+
+    'classification_result' => [
+        'set_result_success' => 'Resultado da classificação definido com sucesso.',
+    ],
+
     'error' => [
         'user_inactive' => 'Usuário foi desativado. Fale com um administrador.',
         'permission_denied' => 'Permissão negada. Você não tem acesso a essa parte do sistema.',
@@ -37,5 +52,8 @@ return [
         'email_verification_error' => 'Ocorreu um erro ao verificar o e-mail. Por favor, tente novamente mais tarde.',
         'password_reset_invalid_token' => 'Token de redefinição de senha inválido ou expirado.',
         'error_password_same' => 'A nova senha não pode ser a mesma que a senha antiga.',
+        'classification_not_found' => 'Classificação não encontrada.',
+        'unauthorized_webhook_api_key' => 'Chave de API do Webhook não autorizada.',
+        'forbidden_invalid_session' => 'Sessão inválida para este endpoint.',
     ],
 ];

@@ -40,7 +40,7 @@
         --radius: 0.5rem;
 
         /* 🧱 Sidebar */
-        --sidebar-background: 330 25% 97%;
+        --sidebar-background: 0 0% 100%;
         --sidebar-foreground: 217 27% 29%;
         --sidebar-primary: 151 82% 21%;
         --sidebar-primary-foreground: 0 0% 98%;

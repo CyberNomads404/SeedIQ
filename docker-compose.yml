@@ -21,6 +21,7 @@ services:
             - '.:/var/www/html'
         networks:
             - sail
+            - shared_net
         depends_on:
             - mysql
             - redis
@@ -35,14 +36,14 @@ services:
         #         php artisan serve --host=0.0.0.0 --port=80
         #     "
 
-    # cloudflared-laravel:
-    #     image: cloudflare/cloudflared:latest
-    #     restart: unless-stopped
-    #     command: tunnel --url http://laravel.test:80
-    #     networks:
-    #         - sail
-    #     depends_on:
-    #         - laravel.test
+        # cloudflared-laravel:
+        #     image: cloudflare/cloudflared:latest
+        #     restart: unless-stopped
+        #     command: tunnel --url http://laravel.test:80
+        #     networks:
+        #         - sail
+        #     depends_on:
+        #         - laravel.test
 
     mysql:
         image: 'mysql/mysql-server:8.0'
@@ -100,9 +101,35 @@ services:
             retries: 3
             timeout: 5s
 
+    laravel.worker:
+        build:
+            context: './vendor/laravel/sail/runtimes/8.4'
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: 'sail-8.4/worker'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            QUEUE_CONNECTION: '${QUEUE_CONNECTION:-redis}'
+            API_SERVICE_HOST: '${API_SERVICE_HOST:-laravel.test}'
+            API_SERVICE_PORT: '${API_SERVICE_PORT:-80}'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
+            - shared_net
+        depends_on:
+            - redis
+            - mysql
+        restart: unless-stopped
+        command: /bin/bash -lc "php artisan queue:work ${QUEUE_CONNECTION:-redis} --sleep=3 --tries=3 --timeout=90"
+
 networks:
     sail:
         driver: bridge
+    shared_net:
+        external: true
 volumes:
     sail-mysql:
         driver: local

@@ -79,10 +79,17 @@ const getColumns = (
                 );
             },
             cell: ({ row }) => (
-                <div className="flex items-center gap-2">
-                    <span>{row.original.name}</span>
-                </div>
-            ),
+                    <div className="flex items-center gap-2">
+                        {row.original.avatar_url ? (
+                            <img src={row.original.avatar_url} alt={row.original.name} className="w-8 h-8 rounded-full object-cover" />
+                        ) : (
+                            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                                <Clipboard className="w-4 h-4" />
+                            </div>
+                        )}
+                        <span className="font-medium">{row.original.name}</span>
+                    </div>
+                ),
         },
         {
             accessorKey: "email",
