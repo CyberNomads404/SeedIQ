@@ -43,7 +43,7 @@ class SendClassificationForAnalyze implements ShouldQueue
                 return;
             }
 
-            $this->markAs(StatusTypeEnum::COMPLETED->value);
+            $this->markAs(StatusTypeEnum::IN_PROGRESS->value);
 
             Log::info('Análise enviada com sucesso', [
                 'classification_id' => $this->classification->id,
