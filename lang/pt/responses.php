@@ -53,5 +53,7 @@ return [
         'password_reset_invalid_token' => 'Token de redefinição de senha inválido ou expirado.',
         'error_password_same' => 'A nova senha não pode ser a mesma que a senha antiga.',
         'classification_not_found' => 'Classificação não encontrada.',
+        'unauthorized_webhook_api_key' => 'Chave de API do Webhook não autorizada.',
+        'forbidden_invalid_session' => 'Sessão inválida para este endpoint.',
     ],
 ];

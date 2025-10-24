@@ -73,7 +73,7 @@ class ClassificationController extends AuthController
 
     public function show(string $externalId)
     {
-        $classification = $this->findBy(new $this->model, $externalId, 'external_id');
+        $classification = Classification::where('external_id', $externalId)->first();
 
         if (!$classification) {
             return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404, []);
@@ -99,6 +99,8 @@ class ClassificationController extends AuthController
                 'payload' => $validated,
             ]
         );
+
+        $classification->markAs($validated['data']['status'] === "COMPLETED" ? StatusTypeEnum::COMPLETED->value : StatusTypeEnum::FAILED->value);
 
         return $this->responseMessage('success', trans('responses.classification_result.set_result_success'), 202);
     }

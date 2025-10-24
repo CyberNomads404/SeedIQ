@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'check.access.token' => \App\Http\Middleware\CheckAccessToken::class,
             'check.refresh.token' => \App\Http\Middleware\CheckRefreshToken::class,
+            'validate.api.token' => \App\Http\Middleware\ValidateWebhookKey::class,
         ]);
 
         $middleware->append([

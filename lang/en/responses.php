@@ -49,5 +49,7 @@ return [
         'password_reset_invalid_token' => 'Invalid or expired password reset token.',
         'error_password_same' => 'New password cannot be the same as the old password.',
         'category_not_found' => 'Category not found.',
+        'unauthorized_webhook_api_key' => 'Unauthorized. Invalid Webhook API Key.',
+        'forbidden_invalid_session' => 'Forbidden. Invalid session for this endpoint.',
     ],
 ];

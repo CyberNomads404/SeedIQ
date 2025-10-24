@@ -39,11 +39,11 @@ class SendClassificationForAnalyze implements ShouldQueue
                     'response' => $response,
                 ]);
 
-                $this->markAs(StatusTypeEnum::FAILED->value);
+                $this->classification->markAs(StatusTypeEnum::FAILED->value);
                 return;
             }
 
-            $this->markAs(StatusTypeEnum::IN_PROGRESS->value);
+            $this->classification->markAs(StatusTypeEnum::IN_PROGRESS->value);
 
             Log::info('Análise enviada com sucesso', [
                 'classification_id' => $this->classification->id,
@@ -54,14 +54,16 @@ class SendClassificationForAnalyze implements ShouldQueue
                 'error' => $e->getMessage(),
             ]);
 
-            $this->markAs(StatusTypeEnum::FAILED->value);
+            $this->classification->markAs(StatusTypeEnum::FAILED->value);
         }
     }
 
     private function buildPayload(): array
     {
+        $callback = route('webhook.analyze.set_result');
+
         return [
-            'callback_url' => "https://webhook.site/42c76dba-1db2-496f-8ce2-411b4f181c93",
+            'callback_url' => $this->normalizeCallbackUrl($callback),
             'payload' => [
                 'external_id' => $this->classification->external_id,
                 'image_url' => $this->classification->file_url,
@@ -70,8 +72,28 @@ class SendClassificationForAnalyze implements ShouldQueue
         ];
     }
 
-    private function markAs(string $status): void
+    private function normalizeCallbackUrl(string $url): string
     {
-        $this->classification->update(['status' => $status]);
+        $parts = parse_url($url);
+
+        if (! $parts || empty($parts['host'])) {
+            return $url;
+        }
+
+        $host = $parts['host'];
+
+        if (! in_array($host, ['localhost', '127.0.0.1'], true)) {
+            return $url;
+        }
+
+        $scheme = $parts['scheme'] ?? 'http';
+        $path = $parts['path'] ?? '/';
+        $query = isset($parts['query']) ? ('?' . $parts['query']) : '';
+
+        $replaceHost = getenv('API_SERVICE_HOST') ?: '172.17.0.1';
+        $replacePort = getenv('API_SERVICE_PORT') ?: '80';
+
+        $portPart = $replacePort ? ':' . $replacePort : '';
+        return sprintf('%s://%s%s%s%s', $scheme, $replaceHost, $portPart, $path, $query);
     }
 }

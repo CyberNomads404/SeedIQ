@@ -58,4 +58,10 @@ class Classification extends BaseSoftDeleteModel
     {
         return $this->hasOne(ClassificationResult::class);
     }
+
+    public function markAs(string $status): self
+    {
+        $this->update(['status' => $status]);
+        return $this;
+    }
 }

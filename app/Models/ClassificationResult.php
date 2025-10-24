@@ -12,6 +12,10 @@ class ClassificationResult extends BaseSoftDeleteModel
         'payload',
     ];
 
+    protected $casts = [
+        'payload' => 'array',
+    ];
+
     public function classification()
     {
         return $this->belongsTo(Classification::class);
