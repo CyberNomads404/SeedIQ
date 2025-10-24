@@ -6,10 +6,13 @@ use App\Enums\ClassificationTypeEnum;
 use App\Enums\StatusTypeEnum;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Requests\Api\Classification\ClassificationRequest;
+use App\Http\Requests\Api\ClassificationResult\ClassificationResultWebhookRequest;
 use App\Http\Resources\Api\Classification\ClassificationResource;
 use App\Http\Resources\Api\Meta\MetaResource;
+use App\Jobs\SendClassificationForAnalyze;
 use App\Models\Category;
 use App\Models\Classification;
+use Auth;
 
 class ClassificationController extends AuthController
 {
@@ -61,7 +64,9 @@ class ClassificationController extends AuthController
         $validated['status'] = StatusTypeEnum::REGISTERED;
         $validated['file'] = uploadFile($validated['file'], 'classifications', 's3');
 
-        $this->model::create($validated);
+        $classification = $this->model::create($validated);
+
+        SendClassificationForAnalyze::dispatch($classification);
 
         return $this->responseMessage('success', trans('responses.classification.create_success'), 200, []);
     }
@@ -77,5 +82,24 @@ class ClassificationController extends AuthController
         $classification->load('result');
 
         return $this->responseMessage('success', trans('responses.classification.get_success'), 200, new ClassificationResource($classification));
+    }
+
+    public function set_result(ClassificationResultWebhookRequest $request) {
+        $validated = $request->validated();
+
+        $classification = Classification::where('external_id', $validated['data']['payload']['external_id'])->first();
+
+        if (!$classification) {
+            return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404, []);
+        }
+
+        $classification->result()->updateOrCreate(
+            ['classification_id' => $classification->id],
+            [
+                'payload' => $validated,
+            ]
+        );
+
+        return $this->responseMessage('success', trans('responses.classification_result.set_result_success'), 202);
     }
 }

@@ -34,6 +34,10 @@ return [
         'get_success' => 'Classificação recuperada com sucesso.',
     ],
 
+    'classification_result' => [
+        'set_result_success' => 'Resultado da classificação definido com sucesso.',
+    ],
+
     'error' => [
         'user_inactive' => 'Usuário foi desativado. Fale com um administrador.',
         'permission_denied' => 'Permissão negada. Você não tem acesso a essa parte do sistema.',
