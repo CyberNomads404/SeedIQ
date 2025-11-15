@@ -50,6 +50,16 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $auditExclude = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
