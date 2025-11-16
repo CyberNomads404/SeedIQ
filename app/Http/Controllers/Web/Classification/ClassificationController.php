@@ -60,7 +60,9 @@ class ClassificationController extends AuthController
 
     public function show(string $externalId)
     {
-        $classification = $this->model::where('external_id', $externalId)->firstOrFail();
+        $classification = $this->model::where('external_id', $externalId)
+            ->with(['result', 'category', 'user'])
+            ->firstOrFail();
 
         return Inertia::render('auth/painel/classification/[uuid]/index', [
             'classification' => $classification,

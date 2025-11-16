@@ -93,10 +93,15 @@ class ClassificationController extends AuthController
             return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404, []);
         }
 
+        $resultData = $validated['data']['result'] ?? [];
+
         $classification->result()->updateOrCreate(
             ['classification_id' => $classification->id],
             [
                 'payload' => $validated,
+                'burned' => $resultData['burned'] ?? null,
+                'greenish' => $resultData['greenish'] ?? null,
+                'good_grains' => $resultData['good_grains'] ?? null,
             ]
         );
 

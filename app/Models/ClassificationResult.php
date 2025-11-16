@@ -10,6 +10,9 @@ class ClassificationResult extends BaseSoftDeleteModel
         'external_id',
         'classification_id',
         'payload',
+        'burned',
+        'greenish',
+        'good_grains',
     ];
 
     protected $casts = [

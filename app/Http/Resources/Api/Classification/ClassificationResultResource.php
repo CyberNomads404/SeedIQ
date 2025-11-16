@@ -17,6 +17,9 @@ class ClassificationResultResource extends JsonResource
         return [
             'external_id' => $this->external_id,
             'payload' => $this->payload,
+            'burned' => $this->burned,
+            'greenish' => $this->greenish,
+            'good_grains' => $this->good_grains,
             'created_at' => $this->created_at,
             'created_at_human' => $this->created_at->diffForHumans(),
             'updated_at' => $this->updated_at,
