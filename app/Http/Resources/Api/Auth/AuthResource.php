@@ -35,6 +35,9 @@ class AuthResource extends JsonResource
                 'web' => $this->last_session_web,
                 'api' => $this->last_session_api,
             ],
+            'dashboard' => [
+                'quantity_classifications' => $this->classifications()->count(),
+            ]
         ];
     }
 }
