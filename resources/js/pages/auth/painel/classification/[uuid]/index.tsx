@@ -1,6 +1,6 @@
 import React from "react";
 import { Head, Link } from "@inertiajs/react";
-import { ChevronLeft, Clock, User, Tag, Image as ImageIcon, BarChart3, Zap, Leaf, Sparkles } from "lucide-react";
+import { ChevronLeft, Clock, User, Tag, Image as ImageIcon, BarChart3, Zap, Leaf, Sparkles, Slash } from "lucide-react";
 import AuthenticatedLayout from "@/layouts/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -117,6 +117,21 @@ export default function Show({ classification }: IClassificationShowProps) {
                                                 <Tag className="w-5 h-5 mr-2" />
                                                 Categoria
                                             </h3>
+                                            <div className="flex items-center gap-3 min-w-[160px]">
+                                                {classification.category_for_display.icon_url ? (
+                                                    <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
+                                                        <img
+                                                            src={classification.category_for_display.icon_url}
+                                                            alt={classification.category_for_display.name}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
+                                                        <Slash className="w-4 h-4 text-muted-foreground" />
+                                                    </div>
+                                                )}
+                                            </div>
                                             <div className="flex items-center space-x-3 p-4 bg-muted/50 rounded-lg">
                                                 {classification.category_for_display.icon_url && (
                                                     <img
