@@ -109,4 +109,22 @@ class ClassificationController extends AuthController
 
         return $this->responseMessage('success', trans('responses.classification_result.set_result_success'), 202);
     }
+
+    public function reanalyze(string $externalId)
+    {
+        $classification = Classification::where('external_id', $externalId)->first();
+
+        if (!$classification) {
+            return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404);
+        }
+
+        $classification->update([
+            'status' => StatusTypeEnum::REGISTERED->value,
+            'message' => null,
+        ]);
+
+        SendClassificationForAnalyze::dispatch($classification);
+
+        return $this->responseMessage('success', 'A análise foi reenviada com sucesso.', 200, new ClassificationResource($classification->fresh()));
+    }
 }
