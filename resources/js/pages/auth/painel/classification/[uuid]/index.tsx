@@ -1,6 +1,6 @@
-import React from "react";
-import { Head, Link } from "@inertiajs/react";
-import { ChevronLeft, Clock, User, Tag, Image as ImageIcon, BarChart3, Zap, Leaf, Sparkles, Slash } from "lucide-react";
+import React, { useState } from "react";
+import { Head, Link, router } from "@inertiajs/react";
+import { ChevronLeft, Clock, User, Tag, Image as ImageIcon, BarChart3, Zap, Leaf, Sparkles, Slash, CircleX, UserIcon } from "lucide-react";
 import AuthenticatedLayout from "@/layouts/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +37,41 @@ export default function Show({ classification }: IClassificationShowProps) {
         return ((value / totalGrains) * 100).toFixed(1);
     };
 
+    const [isRetrying, setIsRetrying] = useState(false);
+    const [retryError, setRetryError] = useState<string | null>(null);
+    const [retrySuccess, setRetrySuccess] = useState<string | null>(null);
+
+    const handleRetry = async () => {
+        setRetryError(null);
+        setRetrySuccess(null);
+        setIsRetrying(true);
+
+        try {
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            const resp = await fetch(`/api/classifications/${classification.external_id}/retry`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrf,
+                },
+                body: JSON.stringify({}),
+            });
+
+            if (resp.ok) {
+                setRetrySuccess('Reanálise iniciada. O resultado pode levar alguns minutos.');
+                setTimeout(() => window.location.reload(), 900);
+            } else {
+                const data = await resp.json().catch(() => ({}));
+                setRetryError(data.message || 'Falha ao iniciar a reanálise.');
+            }
+        } catch (err: any) {
+            setRetryError(err?.message || 'Erro de rede ao tentar reanalisar.');
+        } finally {
+            setIsRetrying(false);
+        }
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -69,12 +104,6 @@ export default function Show({ classification }: IClassificationShowProps) {
                                             <Clock className="w-4 h-4 mr-1" />
                                             Criado {classification.created_at_human || 'em data desconhecida'}
                                         </div>
-                                        {classification.user_for_display && (
-                                            <div className="flex items-center">
-                                                <User className="w-4 h-4 mr-1" />
-                                                {classification.user_for_display.name}
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
                                 <Badge
@@ -157,6 +186,42 @@ export default function Show({ classification }: IClassificationShowProps) {
                                                 {classification.message}
                                             </p>
                                         </div>
+                                    )}
+
+                                    {classification.user_for_display && (
+                                        <Button
+                                            variant="ghost"
+                                            className="h-auto p-2 hover:bg-muted/50 transition-colors duration-200 min-w-[180px]"
+                                            onClick={() =>
+                                                router.get(
+                                                    route("users.show", { uuid: classification.user_for_display?.external_id })
+                                                )
+                                            }
+                                        >
+                                            <div className="flex items-center gap-3 w-full">
+                                                {classification.user_for_display.avatar_url ? (
+                                                    <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
+                                                        <img
+                                                            src={classification.user_for_display.avatar_url}
+                                                            alt={classification.user_for_display.name}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
+                                                        <UserIcon className="w-4 h-4 text-muted-foreground" />
+                                                    </div>
+                                                )}
+                                                <div className="text-left flex-1 min-w-0">
+                                                    <h4 className="font-medium text-foreground text-sm truncate">
+                                                        {classification.user_for_display.name}
+                                                    </h4>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        Clique para detalhes
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Button>
                                     )}
                                 </div>
                             </div>
@@ -292,17 +357,36 @@ export default function Show({ classification }: IClassificationShowProps) {
                             <CardContent className="p-8 text-center">
                                 <div className="space-y-4">
                                     <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto">
-                                        <BarChart3 className="w-8 h-8 text-muted-foreground" />
+                                        {classification.status === 'failed' ? <CircleX className="w-8 h-8 text-muted-foreground" /> : <BarChart3 className="w-8 h-8 text-muted-foreground" />}
                                     </div>
-                                    <h3 className="text-lg font-semibold">Análise em Processamento</h3>
+                                    <h3 className="text-lg font-semibold">
+                                        {classification.status === 'failed' ? 'Falha em Processamento' : 'Análise em Processamento'}
+                                    </h3>
                                     <p className="text-muted-foreground max-w-md mx-auto">
-                                        Os resultados da análise ainda não estão disponíveis.
-                                        Isso pode levar alguns minutos para ser processado.
+                                        {classification.status === 'failed'
+                                            ? 'A análise desta imagem falhou. Você pode tentar reanalisar a imagem abaixo.'
+                                            : 'Os resultados da análise ainda não estão disponíveis. Isso pode levar alguns minutos para ser processado.'
+                                        }
                                     </p>
+
                                     {classification.status === 'failed' && (
-                                        <p className="text-red-600 text-sm">
-                                            Houve um problema no processamento desta análise.
-                                        </p>
+                                        <>
+                                            <p className="text-red-600 text-sm">Houve um problema no processamento desta análise.</p>
+
+                                            <div className="flex items-center justify-center space-x-2">
+                                                <Button onClick={handleRetry} disabled={isRetrying}>
+                                                    {isRetrying ? 'Reanalisando...' : 'Reanalisar'}
+                                                </Button>
+                                            </div>
+
+                                            {retryError && (
+                                                <p className="text-red-600 text-sm mt-2">{retryError}</p>
+                                            )}
+
+                                            {retrySuccess && (
+                                                <p className="text-green-600 text-sm mt-2">{retrySuccess}</p>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             </CardContent>
