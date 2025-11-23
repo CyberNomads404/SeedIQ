@@ -423,7 +423,7 @@ export default function Show({ classification }: IClassificationShowProps) {
                                                         </div>
 
                                                         <div className="mt-2 text-xs text-muted-foreground flex items-center gap-4">
-                                                            <p className="text-xs text-muted-foreground">
+                                                            <p className="text-xs text-muted-foreground opacity-80">
                                                                 Clique para ver mais detalhes
                                                             </p>
                                                         </div>
