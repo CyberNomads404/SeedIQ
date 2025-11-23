@@ -308,7 +308,7 @@ export default function Show({ classification }: IClassificationShowProps) {
                                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                                         <div className="flex items-center">
                                             <Clock className="w-4 h-4 mr-1" />
-                                            Criado {formatDate(classification.created_at ?? classification.created_at_human)}
+                                            Criado em {formatDate(classification.created_at ?? classification.created_at_human)}
                                         </div>
                                     </div>
                                 </div>
@@ -340,95 +340,98 @@ export default function Show({ classification }: IClassificationShowProps) {
                                     </InfoRow>
                                 </div>
 
-                                <div className="space-y-6">
-                                    {classification.category_for_display && (
-                                        <div className="space-y-2">
-                                            <h3 className="text-lg font-semibold flex items-center">
-                                                <Tag className="w-5 h-5 mr-2" />
-                                                Categoria
-                                            </h3>
+                                <div className="space-y-6 flex flex-col justify-between">
+                                    <div>
+                                        {classification.category_for_display && (
+                                            <div className="space-y-2">
+                                                <h3 className="text-lg font-semibold flex items-center">
+                                                    <Tag className="w-5 h-5 mr-2" />
+                                                    Categoria
+                                                </h3>
 
 
-                                            <div className="flex items-center space-x-3 p-4 bg-muted/50 rounded-lg">
-                                                {classification.category_for_display.icon_url && (
-                                                    <img
-                                                        src={classification.category_for_display.icon_url}
-                                                        alt={classification.category_for_display.name}
-                                                        className="w-8 h-8"
-                                                    />
-                                                )}
-                                                <div>
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="flex items-center gap-3">
-                                                            {classification.category_for_display.icon_url ? (
-                                                                <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
-                                                                    <img
-                                                                        src={classification.category_for_display.icon_url}
-                                                                        alt={classification.category_for_display.name}
-                                                                        className="w-full h-full object-cover"
-                                                                    />
-                                                                </div>
-                                                            ) : (
-                                                                <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
-                                                                    <Slash className="w-4 h-4 text-muted-foreground" />
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <p className="font-medium">{classification.category_for_display.name}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {classification.message && (
-                                        <div className="space-y-2">
-                                            <h3 className="text-lg font-semibold">Mensagem</h3>
-                                            <p className="text-muted-foreground p-4 bg-muted/50 rounded-lg">{classification.message}</p>
-                                        </div>
-                                    )}
-
-                                    {classification.user_for_display && (
-                                        <Button
-                                            variant="ghost"
-                                            className="w-full p-16 hover:bg-muted/50 transition-colors"
-                                            onClick={() => router.get(route("users.show", { uuid: classification.user_for_display?.external_id }))}
-                                        >
-                                            <div className="flex items-center gap-4 p-3 rounded-lg w-full">
-                                                <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-border">
-                                                    {classification.user_for_display.avatar_url ? (
-                                                        <img src={classification.user_for_display.avatar_url} alt={classification.user_for_display.name} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground">
-                                                            <span className="font-medium">{classification.user_for_display.name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}</span>
-                                                        </div>
+                                                <div className="flex items-center space-x-3 p-4 bg-muted/50 rounded-lg">
+                                                    {classification.category_for_display.icon_url && (
+                                                        <img
+                                                            src={classification.category_for_display.icon_url}
+                                                            alt={classification.category_for_display.name}
+                                                            className="w-8 h-8"
+                                                        />
                                                     )}
-                                                </div>
-
-                                                <div className="flex-1 min-w-0 w-full">
-                                                    <div className="flex items-center justify-between gap-3">
-                                                        <h4 className="font-medium text-foreground text-sm truncate">{classification.user_for_display.name}</h4>
-                                                        <Badge className="text-xs" variant={classification.user_for_display.active ? 'secondary' : 'outline'}>
-                                                            {classification.user_for_display.role_user ?? (classification.user_for_display.active ? 'Ativo' : 'Inativo')}
-                                                        </Badge>
-                                                    </div>
-
-                                                    <div className="mt-1 text-xs text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-1 w-full">
-                                                        <div className="flex items-center gap-2 truncate w-full">
-                                                            <Mail className="w-3 h-3" />
-                                                            <span className="truncate">{classification.user_for_display.email}</span>
+                                                    <div>
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex items-center gap-3">
+                                                                {classification.category_for_display.icon_url ? (
+                                                                    <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
+                                                                        <img
+                                                                            src={classification.category_for_display.icon_url}
+                                                                            alt={classification.category_for_display.name}
+                                                                            className="w-full h-full object-cover"
+                                                                        />
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
+                                                                        <Slash className="w-4 h-4 text-muted-foreground" />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <p className="font-medium">{classification.category_for_display.name}</p>
                                                         </div>
-                                                    </div>
-
-                                                    <div className="mt-2 text-xs text-muted-foreground flex items-center gap-4">
-                                                        <p className="text-xs text-muted-foreground">
-                                                            Clique para ver mais detalhes
-                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </Button>
-                                    )}
+                                        )}
+
+                                        {classification.message && (
+                                            <div className="space-y-2">
+                                                <h3 className="text-lg font-semibold">Mensagem</h3>
+                                                <p className="text-muted-foreground p-4 bg-muted/50 rounded-lg">{classification.message}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        {classification.user_for_display && (
+                                            <Button
+                                                variant="ghost"
+                                                className="w-full py-12 px-6 bg-muted/50 hover:bg-muted/50 transition-colors"
+                                                onClick={() => router.get(route("users.show", { uuid: classification.user_for_display?.external_id }))}
+                                            >
+                                                <div className="flex items-center gap-4 rounded-lg w-full">
+                                                    <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-border">
+                                                        {classification.user_for_display.avatar_url ? (
+                                                            <img src={classification.user_for_display.avatar_url} alt={classification.user_for_display.name} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground">
+                                                                <span className="font-medium">{classification.user_for_display.name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="flex-1 min-w-0 w-full">
+                                                        <div className="flex items-center justify-between gap-3">
+                                                            <h4 className="font-medium text-foreground text-sm truncate">{classification.user_for_display.name}</h4>
+                                                            <Badge className="text-xs" variant={classification.user_for_display.active ? 'secondary' : 'outline'}>
+                                                                {classification.user_for_display.role_user ?? (classification.user_for_display.active ? 'Ativo' : 'Inativo')}
+                                                            </Badge>
+                                                        </div>
+
+                                                        <div className="mt-1 text-xs text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-1 w-full">
+                                                            <div className="flex items-center gap-2 truncate w-full">
+                                                                <Mail className="w-3 h-3" />
+                                                                <span className="truncate">{classification.user_for_display.email}</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="mt-2 text-xs text-muted-foreground flex items-center gap-4">
+                                                            <p className="text-xs text-muted-foreground">
+                                                                Clique para ver mais detalhes
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
