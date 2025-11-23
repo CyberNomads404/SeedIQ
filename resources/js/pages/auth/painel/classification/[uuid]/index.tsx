@@ -11,6 +11,7 @@ import {
     Leaf,
     Sparkles,
     CircleX,
+    Mail
 } from "lucide-react";
 import AuthenticatedLayout from "@/layouts/authenticated-layout";
 import { Button } from "@/components/ui/button";
@@ -347,21 +348,6 @@ export default function Show({ classification }: IClassificationShowProps) {
                                                 Categoria
                                             </h3>
 
-                                            <div className="flex items-center gap-3 min-w-[160px]">
-                                                {classification.category_for_display.icon_url ? (
-                                                    <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
-                                                        <img
-                                                            src={classification.category_for_display.icon_url}
-                                                            alt={classification.category_for_display.name}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    </div>
-                                                ) : (
-                                                    <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
-                                                        <Slash className="w-4 h-4 text-muted-foreground" />
-                                                    </div>
-                                                )}
-                                            </div>
 
                                             <div className="flex items-center space-x-3 p-4 bg-muted/50 rounded-lg">
                                                 {classification.category_for_display.icon_url && (
@@ -372,8 +358,24 @@ export default function Show({ classification }: IClassificationShowProps) {
                                                     />
                                                 )}
                                                 <div>
-                                                    <p className="font-medium">{classification.category_for_display.name}</p>
-                                                    <p className="text-sm text-muted-foreground">Tag: {classification.category_for_display.tag}</p>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="flex items-center gap-3">
+                                                            {classification.category_for_display.icon_url ? (
+                                                                <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
+                                                                    <img
+                                                                        src={classification.category_for_display.icon_url}
+                                                                        alt={classification.category_for_display.name}
+                                                                        className="w-full h-full object-cover"
+                                                                    />
+                                                                </div>
+                                                            ) : (
+                                                                <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
+                                                                    <Slash className="w-4 h-4 text-muted-foreground" />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <p className="font-medium">{classification.category_for_display.name}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -389,23 +391,40 @@ export default function Show({ classification }: IClassificationShowProps) {
                                     {classification.user_for_display && (
                                         <Button
                                             variant="ghost"
-                                            className="h-auto p-2 hover:bg-muted/50 transition-colors duration-200 min-w-[180px]"
+                                            className="w-full p-16 hover:bg-muted/50 transition-colors"
                                             onClick={() => router.get(route("users.show", { uuid: classification.user_for_display?.external_id }))}
                                         >
-                                            <div className="flex items-center gap-3 w-full">
-                                                {classification.user_for_display.avatar_url ? (
-                                                    <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
+                                            <div className="flex items-center gap-4 p-3 rounded-lg w-full">
+                                                <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-border">
+                                                    {classification.user_for_display.avatar_url ? (
                                                         <img src={classification.user_for_display.avatar_url} alt={classification.user_for_display.name} className="w-full h-full object-cover" />
-                                                    </div>
-                                                ) : (
-                                                    <div className="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
-                                                        <svg className="w-4 h-4 text-muted-foreground" />
-                                                    </div>
-                                                )}
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground">
+                                                            <span className="font-medium">{classification.user_for_display.name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
 
-                                                <div className="text-left flex-1 min-w-0">
-                                                    <h4 className="font-medium text-foreground text-sm truncate">{classification.user_for_display.name}</h4>
-                                                    <p className="text-xs text-muted-foreground">Clique para detalhes</p>
+                                                <div className="flex-1 min-w-0 w-full">
+                                                    <div className="flex items-center justify-between gap-3">
+                                                        <h4 className="font-medium text-foreground text-sm truncate">{classification.user_for_display.name}</h4>
+                                                        <Badge className="text-xs" variant={classification.user_for_display.active ? 'secondary' : 'outline'}>
+                                                            {classification.user_for_display.role_user ?? (classification.user_for_display.active ? 'Ativo' : 'Inativo')}
+                                                        </Badge>
+                                                    </div>
+
+                                                    <div className="mt-1 text-xs text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-1 w-full">
+                                                        <div className="flex items-center gap-2 truncate w-full">
+                                                            <Mail className="w-3 h-3" />
+                                                            <span className="truncate">{classification.user_for_display.email}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mt-2 text-xs text-muted-foreground flex items-center gap-4">
+                                                        <p className="text-xs text-muted-foreground">
+                                                            Clique para ver mais detalhes
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </Button>
