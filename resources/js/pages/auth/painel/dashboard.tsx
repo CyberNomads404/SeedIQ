@@ -3,7 +3,38 @@ import { Head } from '@inertiajs/react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowUp, Users, Activity, Disc, Layers } from 'lucide-react';
-import React from 'react';
+
+function BarChart({ data = [], height = 200 }: any) {
+    if (!data || data.length === 0) return null;
+
+    const maxValue = Math.max(...data.map((d: any) => d.value), 1);
+    const barWidth = 100 / (data.length * 1.5);
+
+    return (
+        <div className="flex flex-col gap-4">
+            <div style={{ height: `${height}px` }} className="flex items-flex-end justify-center gap-2">
+                {data.map((d: any, i: number) => (
+                    <div key={i} className="flex flex-col items-center gap-1" style={{ width: `${barWidth}%` }}>
+                        <div className="w-full flex items-flex-end justify-center" style={{ height: `${height - 40}px` }}>
+                            <div
+                                className="bg-primary rounded-t transition-all duration-300 hover:bg-primary/80 hover:opacity-80"
+                                style={{
+                                    width: '100%',
+                                    height: `${(d.value / maxValue) * (height - 40)}px`,
+                                    minHeight: d.value > 0 ? '4px' : '0px',
+                                }}
+                                title={`${d.label}: ${d.value.toLocaleString()}`}
+                            />
+                        </div>
+                        <div className="text-xs text-muted-foreground text-center whitespace-nowrap w-full overflow-hidden text-ellipsis">
+                            {d.label}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
 
 function StatCard({ title, value, delta, icon: Icon, className = '' }: any) {
     return (
@@ -70,22 +101,6 @@ function DonutChart({ segments = [], size = 120, strokeWidth = 24 }: any) {
     );
 }
 
-function Sparkline({ points = [], className = '' }: any) {
-    const w = 200;
-    const h = 48;
-    const max = Math.max(...points, 1);
-    const min = Math.min(...points, 0);
-    const stepX = w / Math.max(points.length - 1, 1);
-    const path = points
-        .map((p: number, i: number) => `${i === 0 ? 'M' : 'L'} ${i * stepX} ${h - ((p - min) / (max - min || 1)) * h}`)
-        .join(' ');
-    return (
-        <svg width="100%" viewBox={`0 0 ${w} ${h}`} className={className} preserveAspectRatio="none">
-            <path d={path} stroke="rgba(59,130,246,0.9)" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-    );
-}
-
 export default function Dashboard() {
     const mock = {
         users: {
@@ -105,6 +120,19 @@ export default function Dashboard() {
         ],
         pendingAnalyses: 520,
         successRate: 96.3,
+        monthlyAnalyses: [
+            { label: 'Jan', value: 4200 },
+            { label: 'Fev', value: 3800 },
+            { label: 'Mar', value: 5100 },
+            { label: 'Abr', value: 4600 },
+            { label: 'Mai', value: 5800 },
+            { label: 'Jun', value: 4900 },
+            { label: 'Jul', value: 6200 },
+            { label: 'Ago', value: 5300 },
+            { label: 'Set', value: 6100 },
+            { label: 'Out', value: 5700 },
+            { label: 'Nov', value: 4300 },
+        ],
     };
 
     const userSegments = [
@@ -170,6 +198,21 @@ export default function Dashboard() {
                         </CardContent>
                     </Card>
                 </div>
+
+                <Card className="p-4">
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <div className="text-sm text-muted-foreground">Análises por mês</div>
+                                <div className="text-lg font-semibold">Evolução em 2025</div>
+                            </div>
+                            <Badge variant="secondary">11 meses</Badge>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <BarChart data={mock.monthlyAnalyses} height={250} />
+                    </CardContent>
+                </Card>
             </div>
         </AuthenticatedLayout>
     );
