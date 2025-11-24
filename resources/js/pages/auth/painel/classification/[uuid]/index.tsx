@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { Head, Link, router, useForm } from "@inertiajs/react";
 import {
     ChevronLeft,
@@ -476,7 +476,21 @@ export default function Show({ classification }: IClassificationShowProps) {
         () => normalizeStatus(classification.status),
         [classification.status]
     );
-    const processing = status === "in_progress";
+    const processing = ["registered", "in_progress"].includes(classification.status);
+
+    useEffect(() => {
+        let intervalId: number | undefined;
+
+        if (processing) {
+            intervalId = window.setInterval(() => {
+                window.location.reload();
+            }, 2500);
+        }
+
+        return () => {
+            if (intervalId) clearInterval(intervalId);
+        };
+    }, [processing]);
 
     const handleReanalyze = () => {
         router.put(
@@ -484,7 +498,7 @@ export default function Show({ classification }: IClassificationShowProps) {
             {},
             {
                 onSuccess: () => {
-                    setTimeout(() => window.location.reload(), 900);
+                    window.location.reload();
                 },
             }
         );
