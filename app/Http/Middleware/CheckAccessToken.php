@@ -46,6 +46,10 @@ class CheckAccessToken
 
                 return $this->responseMessage('error', trans('responses.error.token_invalid_or_expired'), 401);
             }
+
+            $accessToken->update([
+                'expires_at' => now()->addSeconds(config('sanctum.ttl')),
+            ]);
         }
 
         return $next($request);
