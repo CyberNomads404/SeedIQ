@@ -199,23 +199,7 @@ export default function Dashboard({
     topGrains,
     monthlyAnalyses,
 }: DashboardProps) {
-    const mockMonthlyAnalyses = [
-        { label: 'Jan', value: 4200 },
-        { label: 'Fev', value: 3800 },
-        { label: 'Mar', value: 5100 },
-        { label: 'Abr', value: 4600 },
-        { label: 'Mai', value: 5800 },
-        { label: 'Jun', value: 4900 },
-        { label: 'Jul', value: 6200 },
-        { label: 'Ago', value: 5300 },
-        { label: 'Set', value: 6100 },
-        { label: 'Out', value: 5700 },
-        { label: 'Nov', value: 4300 },
-    ];
-
-    const currentMonthlyAnalyses = monthlyAnalyses || mockMonthlyAnalyses;
-
-    if (!stats || !userDistribution || !topGrains) {
+    if (!stats || !userDistribution || !topGrains || !monthlyAnalyses) {
         return (
             <AuthenticatedLayout header="Dashboard">
                 <Head title="Dashboard" />
@@ -289,11 +273,11 @@ export default function Dashboard({
                                 <div className="text-sm text-muted-foreground">Análises por mês</div>
                                 <div className="text-lg font-semibold">Evolução em 2025</div>
                             </div>
-                            <Badge variant="secondary">{currentMonthlyAnalyses.length} meses</Badge>
+                            <Badge variant="secondary">{monthlyAnalyses.length} meses</Badge>
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <BarChart data={currentMonthlyAnalyses} height={250} />
+                        <BarChart data={monthlyAnalyses} height={250} />
                     </CardContent>
                 </Card>
             </div>
