@@ -105,81 +105,95 @@ const StatCard = ({
 }) => {
     const colors = {
         red: {
-            border: "border-red-200",
-            bg: "bg-red-50/50",
-            iconBg: "bg-red-100",
-            icon: "text-red-600",
-            label: "text-red-700",
-            value: "text-red-800",
-            percentage: "text-red-600",
+            border: "border-red-200 dark:border-red-600/40",
+            bg: "bg-red-50/50 dark:bg-red-900/40",
+            iconBg: "bg-red-100 dark:bg-red-800/60",
+            icon: "text-red-600 dark:text-red-300",
+            label: "text-red-700 dark:text-red-200",
+            value: "text-red-800 dark:text-red-50",
+            percentage: "text-red-600 dark:text-red-300",
         },
         yellow: {
-            border: "border-yellow-200",
-            bg: "bg-yellow-50/50",
-            iconBg: "bg-yellow-100",
-            icon: "text-yellow-600",
-            label: "text-yellow-700",
-            value: "text-yellow-800",
-            percentage: "text-yellow-600",
+            border: "border-yellow-200 dark:border-yellow-600/40",
+            bg: "bg-yellow-50/50 dark:bg-yellow-900/40",
+            iconBg: "bg-yellow-100 dark:bg-yellow-800/60",
+            icon: "text-yellow-600 dark:text-yellow-300",
+            label: "text-yellow-700 dark:text-yellow-200",
+            value: "text-yellow-800 dark:text-yellow-50",
+            percentage: "text-yellow-600 dark:text-yellow-300",
         },
         green: {
-            border: "border-green-200",
-            bg: "bg-green-50/50",
-            iconBg: "bg-green-100",
-            icon: "text-green-600",
-            label: "text-green-700",
-            value: "text-green-800",
-            percentage: "text-green-600",
+            border: "border-green-200 dark:border-green-600/40",
+            bg: "bg-green-50/50 dark:bg-green-900/40",
+            iconBg: "bg-green-100 dark:bg-green-800/60",
+            icon: "text-green-600 dark:text-green-300",
+            label: "text-green-700 dark:text-green-200",
+            value: "text-green-800 dark:text-green-50",
+            percentage: "text-green-600 dark:text-green-300",
         },
         lime: {
-            border: "border-lime-200",
-            bg: "bg-lime-50/50",
-            iconBg: "bg-lime-100",
-            icon: "text-lime-600",
-            label: "text-lime-700",
-            value: "text-lime-800",
-            percentage: "text-lime-600",
+            border: "border-lime-200 dark:border-lime-600/40",
+            bg: "bg-lime-50/50 dark:bg-lime-900/40",
+            iconBg: "bg-lime-100 dark:bg-lime-800/60",
+            icon: "text-lime-600 dark:text-lime-300",
+            label: "text-lime-700 dark:text-lime-200",
+            value: "text-lime-800 dark:text-lime-50",
+            percentage: "text-lime-600 dark:text-lime-300",
         },
         gray: {
-            border: "border-gray-200",
-            bg: "bg-gray-50/50",
-            iconBg: "bg-gray-100",
-            icon: "text-gray-600",
-            label: "text-gray-700",
-            value: "text-gray-800",
-            percentage: "text-gray-600",
+            border: "border-gray-200 dark:border-gray-600/40",
+            bg: "bg-gray-50/50 dark:bg-gray-900/40",
+            iconBg: "bg-gray-100 dark:bg-gray-800/60",
+            icon: "text-gray-600 dark:text-gray-300",
+            label: "text-gray-700 dark:text-gray-200",
+            value: "text-gray-800 dark:text-gray-50",
+            percentage: "text-gray-600 dark:text-gray-300",
         },
         amber: {
-            border: "border-amber-200",
-            bg: "bg-amber-50/50",
-            iconBg: "bg-amber-100",
-            icon: "text-amber-600",
-            label: "text-amber-700",
-            value: "text-amber-800",
-            percentage: "text-amber-600",
+            border: "border-amber-200 dark:border-amber-600/40",
+            bg: "bg-amber-50/50 dark:bg-amber-900/40",
+            iconBg: "bg-amber-100 dark:bg-amber-800/60",
+            icon: "text-amber-600 dark:text-amber-300",
+            label: "text-amber-700 dark:text-amber-200",
+            value: "text-amber-800 dark:text-amber-50",
+            percentage: "text-amber-600 dark:text-amber-300",
         },
     };
 
     const color = colors[colorScheme];
 
     return (
-        <Card className={`${color.border} ${color.bg}`}>
-            <CardContent className="p-6">
+        <Card className={`${color.border} ${color.bg} dark:backdrop-blur-sm`}>
+            <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                    <div className={`p-3 ${color.iconBg} rounded-full`}>
+                    <div
+                        className={`p-3 ${color.iconBg} rounded-full flex items-center justify-center shadow-sm`}
+                    >
                         <Icon className={`w-6 h-6 ${color.icon}`} />
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                         <p className={`text-sm font-medium ${color.label}`}>
                             {title}
                         </p>
-                        <div className="flex items-baseline space-x-2">
-                            <p className={`text-2xl font-bold ${color.value}`}>
-                                {value}
-                            </p>
-                            <p className={`text-sm ${color.percentage}`}>
-                                ({percentage}%)
-                            </p>
+                        <div className="flex items-baseline justify-between mt-1">
+                            <div className="flex items-baseline space-x-3">
+                                <p
+                                    className={`text-2xl font-bold ${color.value}`}
+                                >
+                                    {value}
+                                </p>
+                                <p
+                                    className={`text-sm ${color.percentage} opacity-90`}
+                                >
+                                    ({percentage}%)
+                                </p>
+                            </div>
+                            <div
+                                className={`text-xs font-medium px-2 py-1 rounded-full ${color.iconBg} ${color.percentage} bg-opacity-30`}
+                                aria-hidden
+                            >
+                                {percentage}%
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -476,7 +490,9 @@ export default function Show({ classification }: IClassificationShowProps) {
         () => normalizeStatus(classification.status),
         [classification.status]
     );
-    const processing = ["registered", "in_progress"].includes(classification.status);
+    const processing = ["registered", "in_progress"].includes(
+        classification.status
+    );
 
     useEffect(() => {
         let intervalId: number | undefined;
