@@ -147,7 +147,7 @@ const TopGrainsCard = ({ grains, totalAnalyses }: TopGrainsCardProps) => (
                     <div className="text-sm text-muted-foreground">Top grãos</div>
                     <div className="text-lg font-semibold">Tipos mais analisados</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Últimos 30 dias</div>
+                <Badge variant="secondary">Top 3</Badge>
             </div>
         </CardHeader>
         <CardContent>
@@ -199,25 +199,6 @@ export default function Dashboard({
     topGrains,
     monthlyAnalyses,
 }: DashboardProps) {
-    const mockStats = {
-        totalUsers: 1240,
-        totalOperators: 1194,
-        totalAnalyses: 58240,
-        grainsAnalyzed: 1245000,
-    };
-
-    const mockUserDistribution = {
-        admin: 12,
-        support: 34,
-        operator: 1194,
-    };
-
-    const mockTopGrains = [
-        { name: 'Soja', analyses: 21000 },
-        { name: 'Milho', analyses: 17500 },
-        { name: 'Trigo', analyses: 9500 },
-    ];
-
     const mockMonthlyAnalyses = [
         { label: 'Jan', value: 4200 },
         { label: 'Fev', value: 3800 },
@@ -232,15 +213,23 @@ export default function Dashboard({
         { label: 'Nov', value: 4300 },
     ];
 
-    const currentStats = stats || mockStats;
-    const currentDistribution = userDistribution || mockUserDistribution;
-    const currentTopGrains = topGrains || mockTopGrains;
     const currentMonthlyAnalyses = monthlyAnalyses || mockMonthlyAnalyses;
 
+    if (!stats || !userDistribution || !topGrains) {
+        return (
+            <AuthenticatedLayout header="Dashboard">
+                <Head title="Dashboard" />
+                <div className="w-full mx-auto flex items-center justify-center h-96">
+                    <p className="text-muted-foreground">Carregando dados do dashboard...</p>
+                </div>
+            </AuthenticatedLayout>
+        );
+    }
+
     const userSegments: DonutSegment[] = [
-        { label: 'Admin', value: currentDistribution.admin, color: '#1A6E3C' },
-        { label: 'Suporte', value: currentDistribution.support, color: '#E0A439' },
-        { label: 'Operador', value: currentDistribution.operator, color: '#11AADF' },
+        { label: 'Admin', value: userDistribution.admin, color: '#1A6E3C' },
+        { label: 'Suporte', value: userDistribution.support, color: '#E0A439' },
+        { label: 'Operador', value: userDistribution.operator, color: '#11AADF' },
     ];
 
     return (
@@ -251,30 +240,30 @@ export default function Dashboard({
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <StatCard
                         title="Usuários totais"
-                        value={currentStats.totalUsers.toLocaleString()}
+                        value={stats.totalUsers.toLocaleString()}
                         icon={Users}
                     />
                     <StatCard
                         title="Operadores cadastrados"
-                        value={currentStats.totalOperators.toLocaleString()}
+                        value={stats.totalOperators.toLocaleString()}
                         icon={Layers}
                     />
                     <StatCard
                         title="Análises totais"
-                        value={currentStats.totalAnalyses.toLocaleString()}
+                        value={stats.totalAnalyses.toLocaleString()}
                         icon={Activity}
                     />
                     <StatCard
                         title="Grãos analisados"
-                        value={currentStats.grainsAnalyzed.toLocaleString()}
+                        value={stats.grainsAnalyzed.toLocaleString()}
                         icon={Disc}
                     />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     <TopGrainsCard
-                        grains={currentTopGrains}
-                        totalAnalyses={currentStats.totalAnalyses}
+                        grains={topGrains}
+                        totalAnalyses={stats.totalAnalyses}
                     />
 
                     <Card className="p-4">
