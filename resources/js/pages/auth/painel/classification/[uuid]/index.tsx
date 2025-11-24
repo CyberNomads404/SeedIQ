@@ -11,7 +11,12 @@ import {
     Leaf,
     Sparkles,
     CircleX,
-    Mail
+    Mail,
+    NutOffIcon,
+    Shrink,
+    Flame,
+    AlertCircle,
+    HelpCircle
 } from "lucide-react";
 import AuthenticatedLayout from "@/layouts/authenticated-layout";
 import { Button } from "@/components/ui/button";
@@ -88,7 +93,7 @@ const StatCard = ({
     value: number;
     percentage: string;
     icon: React.ElementType;
-    colorScheme: "red" | "yellow" | "green";
+    colorScheme: "red" | "yellow" | "green" | "lime" | "gray" | "amber";
 }) => {
     const colors = {
         red: {
@@ -118,6 +123,33 @@ const StatCard = ({
             value: "text-green-800",
             percentage: "text-green-600",
         },
+        lime: {
+            border: "border-lime-200",
+            bg: "bg-lime-50/50",
+            iconBg: "bg-lime-100",
+            icon: "text-lime-600",
+            label: "text-lime-700",
+            value: "text-lime-800",
+            percentage: "text-lime-600",
+        },
+        gray: {
+            border: "border-gray-200",
+            bg: "bg-gray-50/50",
+            iconBg: "bg-gray-100",
+            icon: "text-gray-600",
+            label: "text-gray-700",
+            value: "text-gray-800",
+            percentage: "text-gray-600",
+        },
+        amber: {
+            border: "border-amber-200",
+            bg: "bg-amber-50/50",
+            iconBg: "bg-amber-100",
+            icon: "text-amber-600",
+            label: "text-amber-700",
+            value: "text-amber-800",
+            percentage: "text-amber-600",
+        },
     };
 
     const color = colors[colorScheme];
@@ -146,10 +178,29 @@ const ResultsCard = ({ classification }: { classification: IClassification }) =>
     const result = classification.result;
     if (!result) return null;
 
-    const totalGrains = (result.burned ?? 0) + (result.greenish ?? 0) + (result.good_grains ?? 0);
+    const good = Number(
+        result.good ?? result.good ?? result.payload?.data?.result?.good ?? 0
+    );
+    const bad_detection = Number(
+        result.bad_detection ?? result.payload?.data?.result?.bad_detection ?? 0
+    );
+    const unknown = Number(
+        result.unknown ?? result.payload?.data?.result?.unknown ?? 0
+    );
+    const burned = Number(
+        result.burned ?? result.payload?.data?.result?.burned ?? 0
+    );
+    const greenish = Number(
+        result.greenish ?? result.payload?.data?.result?.greenish ?? 0
+    );
+    const small = Number(
+        result.small ?? result.payload?.data?.result?.small ?? 0
+    );
+
+    const totalGrains = good + bad_detection + unknown + burned + greenish + small;
 
     const getPercentage = (value?: number | null): string => {
-        const v = value ?? 0;
+        const v = Number(value ?? 0);
         return totalGrains === 0 ? "0.0" : ((v / totalGrains) * 100).toFixed(1);
     };
 
@@ -164,25 +215,46 @@ const ResultsCard = ({ classification }: { classification: IClassification }) =>
             <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <StatCard
+                        title="Grãos Bons"
+                        value={good}
+                        percentage={getPercentage(good)}
+                        icon={Sparkles}
+                        colorScheme="green"
+                    />
+                    <StatCard
+                        title="Grãos Pequenos"
+                        value={small}
+                        percentage={getPercentage(small)}
+                        icon={Shrink}
+                        colorScheme="yellow"
+                    />
+                    <StatCard
                         title="Grãos Queimados"
-                        value={result.burned ?? 0}
-                        percentage={getPercentage(result.burned)}
-                        icon={Zap}
+                        value={burned}
+                        percentage={getPercentage(burned)}
+                        icon={Flame}
                         colorScheme="red"
                     />
                     <StatCard
                         title="Grãos Esverdeados"
-                        value={result.greenish ?? 0}
-                        percentage={getPercentage(result.greenish)}
+                        value={greenish}
+                        percentage={getPercentage(greenish)}
                         icon={Leaf}
-                        colorScheme="yellow"
+                        colorScheme="lime"
                     />
                     <StatCard
-                        title="Grãos Bons"
-                        value={result.good_grains ?? 0}
-                        percentage={getPercentage(result.good_grains)}
-                        icon={Sparkles}
-                        colorScheme="green"
+                        title="Má Detecção"
+                        value={bad_detection}
+                        percentage={getPercentage(bad_detection)}
+                        icon={AlertCircle}
+                        colorScheme="amber"
+                    />
+                    <StatCard
+                        title="Grãos Desconhecidos"
+                        value={unknown}
+                        percentage={getPercentage(unknown)}
+                        icon={HelpCircle}
+                        colorScheme="gray"
                     />
                 </div>
 
@@ -194,15 +266,15 @@ const ResultsCard = ({ classification }: { classification: IClassification }) =>
                             <p className="text-sm text-muted-foreground">Total de Grãos</p>
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-green-600">{getPercentage(result.good_grains)}%</p>
+                            <p className="text-2xl font-bold text-green-600">{getPercentage(good)}%</p>
                             <p className="text-sm text-muted-foreground">Qualidade Boa</p>
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-yellow-600">{getPercentage(result.greenish)}%</p>
+                            <p className="text-2xl font-bold text-yellow-600">{getPercentage(small + greenish + burned)}%</p>
                             <p className="text-sm text-muted-foreground">Necessita Atenção</p>
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-red-600">{getPercentage(result.burned)}%</p>
+                            <p className="text-2xl font-bold text-red-600">{getPercentage(bad_detection + unknown)}%</p>
                             <p className="text-sm text-muted-foreground">Problemas</p>
                         </div>
                     </div>
@@ -214,10 +286,10 @@ const ResultsCard = ({ classification }: { classification: IClassification }) =>
                             </summary>
                             <div className="bg-muted/30 p-4 rounded-lg">
                                 <p className="text-sm text-muted-foreground mb-2">
-                                    <strong>Resultado processado:</strong> {formatDate(result.created_at_human ?? result.created_at)}
+                                    <strong>Resultado processado:</strong> {formatDate(result.created_at)}
                                 </p>
                                 <p className="text-sm text-muted-foreground mb-2">
-                                    <strong>Última atualização:</strong> {formatDate(result.updated_at_human ?? result.updated_at)}
+                                    <strong>Última atualização:</strong> {formatDate(result.updated_at)}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
                                     <strong>ID do resultado:</strong> {result.external_id}
