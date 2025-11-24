@@ -50,6 +50,16 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $auditExclude = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -151,5 +161,10 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             'token_name' => $token->name ?? null,
             'created_at' => $token->created_at ? $token->created_at->utc()->toISOString() : null,
         ];
+    }
+
+    public function classifications()
+    {
+        return $this->hasMany(Classification::class);
     }
 }
