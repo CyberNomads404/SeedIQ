@@ -37,6 +37,10 @@ class CheckRefreshToken
 
                 return $this->responseMessage('error', trans('responses.error.token_invalid_or_expired'), 401);
             }
+
+            $refreshToken->update([
+                'expires_at' => now()->addSeconds(config('sanctum.refresh_ttl')),
+            ]);
         }
 
         return $next($request);

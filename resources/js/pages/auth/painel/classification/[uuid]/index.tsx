@@ -353,6 +353,8 @@ export default function Show({ classification }: IClassificationShowProps) {
         });
     };
 
+    console.log(classification);
+
     return (
         <AuthenticatedLayout
             header={

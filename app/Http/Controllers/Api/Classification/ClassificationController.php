@@ -84,7 +84,7 @@ class ClassificationController extends AuthController
         return $this->responseMessage('success', trans('responses.classification.get_success'), 200, new ClassificationResource($classification));
     }
 
-    public function set_result(ClassificationResultWebhookRequest $request) {
+    public function setResult(ClassificationResultWebhookRequest $request) {
         $validated = $request->validated();
 
         $classification = Classification::where('external_id', $validated['data']['payload']['external_id'])->first();
@@ -99,9 +99,12 @@ class ClassificationController extends AuthController
             ['classification_id' => $classification->id],
             [
                 'payload' => $validated,
+                'good' => $resultData['good'] ?? null,
+                'bad_detection' => $resultData['bad_detection'] ?? null,
+                'unknown' => $resultData['unknown'] ?? null,
                 'burned' => $resultData['burned'] ?? null,
                 'greenish' => $resultData['greenish'] ?? null,
-                'good_grains' => $resultData['good_grains'] ?? null,
+                'small' => $resultData['small'] ?? null,
             ]
         );
 
@@ -120,7 +123,6 @@ class ClassificationController extends AuthController
 
         $classification->update([
             'status' => StatusTypeEnum::REGISTERED->value,
-            'message' => null,
         ]);
 
         SendClassificationForAnalyze::dispatch($classification);

@@ -22,9 +22,12 @@ interface IClassification {
 interface IClassificationResult {
     external_id: string;
     payload: any;
-    burned?: number | null;
-    greenish?: number | null;
-    good_grains?: number | null;
+    good: number | null;
+    bad_detection: number | null;
+    unknown: number | null;
+    burned: number | null;
+    greenish: number | null;
+    small: number | null;
     created_at: string;
     created_at_human: string;
     updated_at: string;

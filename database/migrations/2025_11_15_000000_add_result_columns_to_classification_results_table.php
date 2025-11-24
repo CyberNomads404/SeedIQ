@@ -12,9 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('classification_results', function (Blueprint $table) {
-            $table->integer('burned')->nullable()->after('payload');
-            $table->integer('greenish')->nullable()->after('burned');
-            $table->integer('good_grains')->nullable()->after('greenish');
+            $table->integer('good')->nullable();
+            $table->integer('bad_detection')->nullable();
+            $table->integer('unknown')->nullable();
+            $table->integer('burned')->nullable();
+            $table->integer('greenish')->nullable();
+            $table->integer('small')->nullable();
         });
     }
 
@@ -24,7 +27,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('classification_results', function (Blueprint $table) {
-            $table->dropColumn(['burned', 'greenish', 'good_grains']);
+            $table->dropColumn(['good', 'bad_detection', 'unknown', 'burned', 'greenish', 'small']);
         });
     }
 };
