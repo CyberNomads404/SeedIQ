@@ -123,6 +123,6 @@ class ClassificationController extends AuthController
 
         $classification->reanalyze();
 
-        return $this->responseMessage('success', 'A análise foi reenviada com sucesso.', 200, new ClassificationResource($classification->fresh()));
+        return $this->responseMessage('success', trans('responses.classification.reanalyze_success'), 200);
     }
 }
