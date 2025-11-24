@@ -16,7 +16,8 @@ import {
     Shrink,
     Flame,
     AlertCircle,
-    HelpCircle
+    HelpCircle,
+    Router,
 } from "lucide-react";
 import AuthenticatedLayout from "@/layouts/authenticated-layout";
 import { Button } from "@/components/ui/button";
@@ -53,9 +54,16 @@ const formatDate = (value?: string | null): string => {
     }
 };
 
-const StatusBadge = ({ status, label }: { status?: string; label?: string }) => {
+const StatusBadge = ({
+    status,
+    label,
+}: {
+    status?: string;
+    label?: string;
+}) => {
     const normalizedStatus = normalizeStatus(status);
-    const className = STATUS_CLASS_MAP[normalizedStatus] ?? "bg-gray-100 text-gray-800";
+    const className =
+        STATUS_CLASS_MAP[normalizedStatus] ?? "bg-gray-100 text-gray-800";
 
     return (
         <Badge variant="secondary" className={className}>
@@ -162,10 +170,16 @@ const StatCard = ({
                         <Icon className={`w-6 h-6 ${color.icon}`} />
                     </div>
                     <div>
-                        <p className={`text-sm font-medium ${color.label}`}>{title}</p>
+                        <p className={`text-sm font-medium ${color.label}`}>
+                            {title}
+                        </p>
                         <div className="flex items-baseline space-x-2">
-                            <p className={`text-2xl font-bold ${color.value}`}>{value}</p>
-                            <p className={`text-sm ${color.percentage}`}>({percentage}%)</p>
+                            <p className={`text-2xl font-bold ${color.value}`}>
+                                {value}
+                            </p>
+                            <p className={`text-sm ${color.percentage}`}>
+                                ({percentage}%)
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -174,7 +188,11 @@ const StatCard = ({
     );
 };
 
-const ResultsCard = ({ classification }: { classification: IClassification }) => {
+const ResultsCard = ({
+    classification,
+}: {
+    classification: IClassification;
+}) => {
     const result = classification.result;
     if (!result) return null;
 
@@ -197,7 +215,8 @@ const ResultsCard = ({ classification }: { classification: IClassification }) =>
         result.small ?? result.payload?.data?.result?.small ?? 0
     );
 
-    const totalGrains = good + bad_detection + unknown + burned + greenish + small;
+    const totalGrains =
+        good + bad_detection + unknown + burned + greenish + small;
 
     const getPercentage = (value?: number | null): string => {
         const v = Number(value ?? 0);
@@ -259,23 +278,41 @@ const ResultsCard = ({ classification }: { classification: IClassification }) =>
                 </div>
 
                 <div className="bg-muted/50 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold mb-4">Resumo da Análise</h4>
+                    <h4 className="text-lg font-semibold mb-4">
+                        Resumo da Análise
+                    </h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                         <div>
-                            <p className="text-2xl font-bold text-primary">{totalGrains}</p>
-                            <p className="text-sm text-muted-foreground">Total de Grãos</p>
+                            <p className="text-2xl font-bold text-primary">
+                                {totalGrains}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Total de Grãos
+                            </p>
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-green-600">{getPercentage(good)}%</p>
-                            <p className="text-sm text-muted-foreground">Qualidade Boa</p>
+                            <p className="text-2xl font-bold text-green-600">
+                                {getPercentage(good)}%
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Qualidade Boa
+                            </p>
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-yellow-600">{getPercentage(small + greenish + burned)}%</p>
-                            <p className="text-sm text-muted-foreground">Necessita Atenção</p>
+                            <p className="text-2xl font-bold text-yellow-600">
+                                {getPercentage(small + greenish + burned)}%
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Necessita Atenção
+                            </p>
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-red-600">{getPercentage(bad_detection + unknown)}%</p>
-                            <p className="text-sm text-muted-foreground">Problemas</p>
+                            <p className="text-2xl font-bold text-red-600">
+                                {getPercentage(bad_detection + unknown)}%
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                Problemas
+                            </p>
                         </div>
                     </div>
 
@@ -286,13 +323,16 @@ const ResultsCard = ({ classification }: { classification: IClassification }) =>
                             </summary>
                             <div className="bg-muted/30 p-4 rounded-lg">
                                 <p className="text-sm text-muted-foreground mb-2">
-                                    <strong>Resultado processado:</strong> {formatDate(result.created_at)}
+                                    <strong>Resultado processado:</strong>{" "}
+                                    {formatDate(result.created_at)}
                                 </p>
                                 <p className="text-sm text-muted-foreground mb-2">
-                                    <strong>Última atualização:</strong> {formatDate(result.updated_at)}
+                                    <strong>Última atualização:</strong>{" "}
+                                    {formatDate(result.updated_at)}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
-                                    <strong>ID do resultado:</strong> {result.external_id}
+                                    <strong>ID do resultado:</strong>{" "}
+                                    {result.external_id}
                                 </p>
                             </div>
                         </details>
@@ -306,7 +346,7 @@ const ResultsCard = ({ classification }: { classification: IClassification }) =>
 const EmptyState = ({
     status,
     onReanalyze,
-    processing
+    processing,
 }: {
     status: string;
     onReanalyze: () => void;
@@ -315,12 +355,14 @@ const EmptyState = ({
     const stateConfig = {
         failed: {
             title: "Falha no Processamento",
-            description: "A análise desta imagem falhou. Você pode tentar reanalisar a imagem abaixo.",
+            description:
+                "A análise desta imagem falhou. Você pode tentar reanalisar a imagem abaixo.",
             showRetry: true,
         },
         in_progress: {
             title: "Análise em Processamento",
-            description: "Os resultados da análise ainda não estão disponíveis. Isso pode levar alguns minutos para ser processado.",
+            description:
+                "Os resultados da análise ainda não estão disponíveis. Isso pode levar alguns minutos para ser processado.",
             showRetry: false,
         },
         canceled: {
@@ -330,12 +372,15 @@ const EmptyState = ({
         },
         registered: {
             title: "Aguardando Processamento",
-            description: "A análise foi registrada e está na fila para processamento.",
+            description:
+                "A análise foi registrada e está na fila para processamento.",
             showRetry: false,
         },
     };
 
-    const config = stateConfig[status as keyof typeof stateConfig] ?? stateConfig.registered;
+    const config =
+        stateConfig[status as keyof typeof stateConfig] ??
+        stateConfig.registered;
 
     return (
         <Card>
@@ -350,7 +395,9 @@ const EmptyState = ({
                     </div>
 
                     <h3 className="text-lg font-semibold">{config.title}</h3>
-                    <p className="text-muted-foreground max-w-md mx-auto">{config.description}</p>
+                    <p className="text-muted-foreground max-w-md mx-auto">
+                        {config.description}
+                    </p>
 
                     {config.showRetry && (
                         <Button onClick={onReanalyze} disabled={processing}>
@@ -377,12 +424,18 @@ const UserCard = ({ user }: { user: any }) => {
         <Button
             variant="ghost"
             className="w-full py-12 px-6 bg-muted/50 hover:bg-muted/50 transition-colors"
-            onClick={() => router.get(route("users.show", { uuid: user.external_id }))}
+            onClick={() =>
+                router.get(route("users.show", { uuid: user.external_id }))
+            }
         >
             <div className="flex items-center gap-4 rounded-lg w-full">
                 <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-border">
                     {user.avatar_url ? (
-                        <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                        <img
+                            src={user.avatar_url}
+                            alt={user.name}
+                            className="w-full h-full object-cover"
+                        />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground">
                             <span className="font-medium">{initials}</span>
@@ -392,9 +445,15 @@ const UserCard = ({ user }: { user: any }) => {
 
                 <div className="flex-1 min-w-0 w-full">
                     <div className="flex items-center justify-between gap-3">
-                        <h4 className="font-medium text-foreground text-sm truncate">{user.name}</h4>
-                        <Badge className="text-xs" variant={user.active ? "secondary" : "outline"}>
-                            {user.role_user ?? (user.active ? "Ativo" : "Inativo")}
+                        <h4 className="font-medium text-foreground text-sm truncate">
+                            {user.name}
+                        </h4>
+                        <Badge
+                            className="text-xs"
+                            variant={user.active ? "secondary" : "outline"}
+                        >
+                            {user.role_user ??
+                                (user.active ? "Ativo" : "Inativo")}
                         </Badge>
                     </div>
 
@@ -413,19 +472,23 @@ const UserCard = ({ user }: { user: any }) => {
 };
 
 export default function Show({ classification }: IClassificationShowProps) {
-    const status = useMemo(() => normalizeStatus(classification.status), [classification.status]);
-    const { processing, post } = useForm({});
+    const status = useMemo(
+        () => normalizeStatus(classification.status),
+        [classification.status]
+    );
+    const processing = status === "in_progress";
 
     const handleReanalyze = () => {
-        post(route("classifications.api.reanalyze", classification.external_id), {
-            preserveScroll: true,
-            onSuccess: () => {
-                setTimeout(() => window.location.reload(), 900);
-            },
-        });
+        router.put(
+            route("classifications.reanalyze", classification.external_id),
+            {},
+            {
+                onSuccess: () => {
+                    setTimeout(() => window.location.reload(), 900);
+                },
+            }
+        );
     };
-
-    console.log(classification);
 
     return (
         <AuthenticatedLayout
@@ -451,7 +514,11 @@ export default function Show({ classification }: IClassificationShowProps) {
                                     </CardTitle>
                                     <div className="flex items-center text-sm text-muted-foreground">
                                         <Clock className="w-4 h-4 mr-1" />
-                                        Criado em {formatDate(classification.created_at_human ?? classification.created_at)}
+                                        Criado em{" "}
+                                        {formatDate(
+                                            classification.created_at_human ??
+                                                classification.created_at
+                                        )}
                                     </div>
                                 </div>
                                 <StatusBadge
@@ -490,14 +557,26 @@ export default function Show({ classification }: IClassificationShowProps) {
                                         {classification.category_for_display && (
                                             <InfoSection
                                                 title="Categoria"
-                                                icon={<Tag className="w-5 h-5" />}
+                                                icon={
+                                                    <Tag className="w-5 h-5" />
+                                                }
                                             >
                                                 <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
-                                                    {classification.category_for_display.icon_url ? (
+                                                    {classification
+                                                        .category_for_display
+                                                        .icon_url ? (
                                                         <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border bg-background flex-shrink-0">
                                                             <img
-                                                                src={classification.category_for_display.icon_url}
-                                                                alt={classification.category_for_display.name}
+                                                                src={
+                                                                    classification
+                                                                        .category_for_display
+                                                                        .icon_url
+                                                                }
+                                                                alt={
+                                                                    classification
+                                                                        .category_for_display
+                                                                        .name
+                                                                }
                                                                 className="w-full h-full object-cover"
                                                             />
                                                         </div>
@@ -507,7 +586,11 @@ export default function Show({ classification }: IClassificationShowProps) {
                                                         </div>
                                                     )}
                                                     <p className="font-medium">
-                                                        {classification.category_for_display.name}
+                                                        {
+                                                            classification
+                                                                .category_for_display
+                                                                .name
+                                                        }
                                                     </p>
                                                 </div>
                                             </InfoSection>
@@ -515,7 +598,9 @@ export default function Show({ classification }: IClassificationShowProps) {
 
                                         {classification.message && (
                                             <div className="space-y-2">
-                                                <h3 className="text-lg font-semibold">Mensagem</h3>
+                                                <h3 className="text-lg font-semibold">
+                                                    Mensagem
+                                                </h3>
                                                 <p className="text-muted-foreground p-4 bg-muted/50 rounded-lg">
                                                     {classification.message}
                                                 </p>
@@ -523,7 +608,9 @@ export default function Show({ classification }: IClassificationShowProps) {
                                         )}
                                     </div>
 
-                                    <UserCard user={classification.user_for_display} />
+                                    <UserCard
+                                        user={classification.user_for_display}
+                                    />
                                 </div>
                             </div>
                         </CardContent>

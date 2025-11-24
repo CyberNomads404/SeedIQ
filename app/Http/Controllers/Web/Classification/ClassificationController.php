@@ -82,4 +82,12 @@ class ClassificationController extends AuthController
 
         session()->flash('success', 'Classificação deletada com sucesso');
     }
+
+    public function reanalyze(string $externalId)
+    {
+        $classification = $this->model::where('external_id', $externalId)->firstOrFail();
+        $classification->reanalyze();
+
+        session()->flash('success', 'Reanálise da classificação iniciada com sucesso');
+    }
 }

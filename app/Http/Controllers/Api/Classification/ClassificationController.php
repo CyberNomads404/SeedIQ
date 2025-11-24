@@ -73,7 +73,7 @@ class ClassificationController extends AuthController
 
     public function show(string $externalId)
     {
-        $classification = Classification::where('external_id', $externalId)->first();
+        $classification = $this->model::where('external_id', $externalId)->first();
 
         if (!$classification) {
             return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404, []);
@@ -87,7 +87,7 @@ class ClassificationController extends AuthController
     public function setResult(ClassificationResultWebhookRequest $request) {
         $validated = $request->validated();
 
-        $classification = Classification::where('external_id', $validated['data']['payload']['external_id'])->first();
+        $classification = $this->model::where('external_id', $validated['data']['payload']['external_id'])->first();
 
         if (!$classification) {
             return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404, []);
@@ -115,17 +115,13 @@ class ClassificationController extends AuthController
 
     public function reanalyze(string $externalId)
     {
-        $classification = Classification::where('external_id', $externalId)->first();
+        $classification = $this->model::where('external_id', $externalId)->first();
 
         if (!$classification) {
             return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404);
         }
 
-        $classification->update([
-            'status' => StatusTypeEnum::REGISTERED->value,
-        ]);
-
-        SendClassificationForAnalyze::dispatch($classification);
+        $classification->reanalyze();
 
         return $this->responseMessage('success', 'A análise foi reenviada com sucesso.', 200, new ClassificationResource($classification->fresh()));
     }
