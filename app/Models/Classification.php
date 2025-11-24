@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\StatusTypeEnum;
+use App\Jobs\SendClassificationForAnalyze;
 use Illuminate\Database\Eloquent\Model;
 
 class Classification extends BaseSoftDeleteModel
@@ -62,6 +63,14 @@ class Classification extends BaseSoftDeleteModel
     public function markAs(string $status): self
     {
         $this->update(['status' => $status]);
+        return $this;
+    }
+
+    public function reanalyze(): self
+    {
+        $this->markAs(StatusTypeEnum::REGISTERED->value);
+        SendClassificationForAnalyze::dispatch($this);
+        $this->result()->delete();
         return $this;
     }
 }

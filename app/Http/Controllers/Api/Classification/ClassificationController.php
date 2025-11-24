@@ -73,7 +73,7 @@ class ClassificationController extends AuthController
 
     public function show(string $externalId)
     {
-        $classification = Classification::where('external_id', $externalId)->first();
+        $classification = $this->model::where('external_id', $externalId)->first();
 
         if (!$classification) {
             return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404, []);
@@ -84,24 +84,45 @@ class ClassificationController extends AuthController
         return $this->responseMessage('success', trans('responses.classification.get_success'), 200, new ClassificationResource($classification));
     }
 
-    public function set_result(ClassificationResultWebhookRequest $request) {
+    public function setResult(ClassificationResultWebhookRequest $request) {
         $validated = $request->validated();
 
-        $classification = Classification::where('external_id', $validated['data']['payload']['external_id'])->first();
+        $classification = $this->model::where('external_id', $validated['data']['payload']['external_id'])->first();
 
         if (!$classification) {
             return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404, []);
         }
 
+        $resultData = $validated['data']['result'] ?? [];
+
         $classification->result()->updateOrCreate(
             ['classification_id' => $classification->id],
             [
                 'payload' => $validated,
+                'good' => $resultData['good'] ?? null,
+                'bad_detection' => $resultData['bad_detection'] ?? null,
+                'unknown' => $resultData['unknown'] ?? null,
+                'burned' => $resultData['burned'] ?? null,
+                'greenish' => $resultData['greenish'] ?? null,
+                'small' => $resultData['small'] ?? null,
             ]
         );
 
         $classification->markAs($validated['data']['status'] === "COMPLETED" ? StatusTypeEnum::COMPLETED->value : StatusTypeEnum::FAILED->value);
 
         return $this->responseMessage('success', trans('responses.classification_result.set_result_success'), 202);
+    }
+
+    public function reanalyze(string $externalId)
+    {
+        $classification = $this->model::where('external_id', $externalId)->first();
+
+        if (!$classification) {
+            return $this->responseMessage('error', trans('responses.error.classification_not_found'), 404);
+        }
+
+        $classification->reanalyze();
+
+        return $this->responseMessage('success', 'A análise foi reenviada com sucesso.', 200, new ClassificationResource($classification->fresh()));
     }
 }

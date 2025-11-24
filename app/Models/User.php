@@ -162,4 +162,9 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             'created_at' => $token->created_at ? $token->created_at->utc()->toISOString() : null,
         ];
     }
+
+    public function classifications()
+    {
+        return $this->hasMany(Classification::class);
+    }
 }
