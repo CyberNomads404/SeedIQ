@@ -9,6 +9,10 @@ interface IClassification {
     status_label?: string;
     message?: string;
     file_url: string;
+    created_at?: string;
+    created_at_human?: string;
+    updated_at?: string;
+    updated_at_human?: string;
 
     result?: IClassificationResult | null;
     category_for_display?: ICategory | null;
@@ -17,7 +21,17 @@ interface IClassification {
 
 interface IClassificationResult {
     external_id: string;
-    payload: string;
+    payload: any;
+    good: number | null;
+    bad_detection: number | null;
+    unknown: number | null;
+    burned: number | null;
+    greenish: number | null;
+    small: number | null;
+    created_at: string;
+    created_at_human: string;
+    updated_at: string;
+    updated_at_human: string;
 }
 
 interface IClassificationData {

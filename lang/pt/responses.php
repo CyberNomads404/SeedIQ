@@ -32,6 +32,7 @@ return [
         'get_status_success' => 'Status de classificações recuperados com sucesso.',
         'create_success' => 'Classificação criada com sucesso.',
         'get_success' => 'Classificação recuperada com sucesso.',
+        'reanalyze_success' => 'Classificação reenviada com sucesso'
     ],
 
     'classification_result' => [

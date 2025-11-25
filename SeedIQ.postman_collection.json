@@ -1232,6 +1232,88 @@
 					]
 				},
 				{
+					"name": "classification.reanalyze",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}classifications/bbd8faa5-6c00-46dd-a246-2271b3ae2731/reanalyze",
+							"host": [
+								"{{base_url}}classifications"
+							],
+							"path": [
+								"bbd8faa5-6c00-46dd-a246-2271b3ae2731",
+								"reanalyze"
+							]
+						},
+						"description": "Recupera os detalhes de uma classificação específica com base em seu identificador único (external_id). Inclui informações como status, mensagem, arquivo associado, datas e a categoria correspondente.\n\n**Exemplo de Uso**: Utilizado para consultar os detalhes de uma classificação específica registrada pelo usuário."
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}classifications/bbd8faa5-6c00-46dd-a246-2271b3ae2731/reanalyze",
+									"host": [
+										"{{base_url}}classifications"
+									],
+									"path": [
+										"bbd8faa5-6c00-46dd-a246-2271b3ae2731",
+										"reanalyze"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.4.13"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 24 Nov 2025 03:55:05 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": \"Classificação reenviada com sucesso\",\n    \"data\": []\n}"
+						}
+					]
+				},
+				{
 					"name": "classification.store",
 					"request": {
 						"auth": {
@@ -1251,7 +1333,7 @@
 							"formdata": [
 								{
 									"key": "category_external_id",
-									"value": "3b190740-f88b-4b79-a82e-1ac2ad8e2dc9",
+									"value": "98831ec4-a12c-4e3a-b6b8-f40631f64ec4",
 									"type": "text"
 								},
 								{
@@ -1262,7 +1344,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "postman-cloud:///1f0a1521-aa13-4c90-95ef-b04374d73989"
+									"src": "postman-cloud:///1f0c8e84-0dcd-4eb0-a136-39182aff7997"
 								}
 							]
 						},
@@ -1342,6 +1424,76 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"status\": \"success\",\n    \"message\": \"Classificação criada com sucesso.\",\n    \"data\": []\n}"
+						},
+						{
+							"name": "422",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "category_external_id",
+											"value": "3b190740-f88b-4b79-a82e-1ac2ad8e2dc9",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "message",
+											"value": "Foto registrada na fazenda X",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1f0a1521-aa13-4c90-95ef-b04374d73989"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}classifications",
+									"host": [
+										"{{base_url}}classifications"
+									]
+								}
+							},
+							"status": "Unprocessable Content",
+							"code": 422,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.4.13"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 06 Nov 2025 15:01:20 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"message\": \"O campo category external id é obrigatório.\",\n    \"data\": {\n        \"error\": {\n            \"category_external_id\": [\n                \"O campo category external id é obrigatório.\"\n            ]\n        }\n    }\n}"
 						}
 					]
 				}

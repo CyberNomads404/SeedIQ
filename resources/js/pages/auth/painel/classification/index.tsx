@@ -327,6 +327,27 @@ const getColumns = (
                                             </DropdownMenuItem>
                                         </Link>
                                     )}
+                                    {useHasPermission(
+                                        "classifications_edit"
+                                    ) && ['completed', 'failed'].includes(classification.status) && (
+                                        <DropdownMenuItem
+                                            onClick={() => {
+                                                router.put(
+                                                    route(
+                                                        "classifications.reanalyze",
+                                                        classification.external_id
+                                                    ),
+                                                    {},
+                                                    {
+                                                        preserveState: true,
+                                                        preserveScroll: true,
+                                                    }
+                                                );
+                                            }}
+                                        >
+                                            Reanalisar
+                                        </DropdownMenuItem>
+                                    )}
                                     <DropdownMenuSeparator />
                                     {useHasPermission(
                                         "classifications_delete"

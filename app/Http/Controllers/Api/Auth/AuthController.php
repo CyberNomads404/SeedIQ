@@ -81,12 +81,12 @@ class AuthController extends \App\Http\Controllers\Api\AuthController
             return $this->responseMessage('error', trans('responses.error.permission_denied'), 403);
         }
 
-        $accessTokenTtl = config('sanctum.ttl', 3600);
+        $accessTokenTtl = config('sanctum.ttl');
         $accessTokenResult = $user->createToken(TokenTypeEnum::ACCESS_TOKEN->value);
         $accessTokenResult->accessToken->expires_at = now()->addSeconds($accessTokenTtl);
         $accessTokenResult->accessToken->save();
 
-        $refreshTokenTtl = config('sanctum.refresh_ttl', 604800);
+        $refreshTokenTtl = config('sanctum.refresh_ttl');
         $refreshTokenResult = $user->createToken(TokenTypeEnum::REFRESH_TOKEN->value);
         $refreshTokenResult->accessToken->expires_at = now()->addSeconds($refreshTokenTtl);
         $refreshTokenResult->accessToken->save();
@@ -105,7 +105,7 @@ class AuthController extends \App\Http\Controllers\Api\AuthController
 
         if (array_key_exists('avatar', $data)) {
             if ($data['avatar'] === null) {
-                deleteImage($user->getRawOriginal('avatar'), 's3');
+                deleteFile($user->getRawOriginal('avatar'), 's3');
                 $data['avatar'] = null;
             } elseif ($request->file('avatar') instanceof \Illuminate\Http\UploadedFile) {
                 $data['avatar'] = getFile($request->file('avatar'), 'users/avatar', 's3', $user->getRawOriginal('avatar'));
