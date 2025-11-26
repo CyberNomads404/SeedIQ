@@ -329,7 +329,7 @@ const getColumns = (
                                     )}
                                     {useHasPermission(
                                         "classifications_edit"
-                                    ) && ['completed', 'failed'].includes(classification.status) && (
+                                    ) && ['completed', 'failed', 'registered'].includes(classification.status) && (
                                         <DropdownMenuItem
                                             onClick={() => {
                                                 router.put(
