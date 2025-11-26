@@ -68,7 +68,7 @@ class Classification extends BaseSoftDeleteModel
 
     public function reanalyze(): self
     {
-        $this->markAs(StatusTypeEnum::REGISTERED->value);
+        $this->markAs(StatusTypeEnum::IN_PROGRESS->value);
         SendClassificationForAnalyze::dispatch($this);
         $this->result()->delete();
         return $this;
