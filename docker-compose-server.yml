@@ -30,6 +30,7 @@ services:
             done;
             php artisan optimize:clear && \
             php artisan config:cache && \
+            php artisan migrate && \
             php artisan serve --host=0.0.0.0 --port=80
           "
         expose:
