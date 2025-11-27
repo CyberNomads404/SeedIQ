@@ -1,11 +1,11 @@
 services:
     laravel.test:
         build:
-            context: './vendor/laravel/sail/runtimes/8.4'
+            context: './'
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: 'sail-8.4/app'
+        image: 'seediq-laravel/app'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         environment:
@@ -21,27 +21,16 @@ services:
         depends_on:
             - mysql
             - redis
-        # command: /bin/bash -c "npm install && npm run dev & php artisan serve --host=0.0.0.0 --port=80"
         command: /bin/bash -c "
+                composer install &&
                 npm install &&
-                rm -f public/hot &&
-                rm -rf public/build &&
-                NODE_ENV=production npm run build &&
+                npm run build &&
                 php artisan optimize:clear &&
                 php artisan config:cache &&
                 php artisan serve --host=0.0.0.0 --port=80
             "
         expose:
             - "80"
-
-        # cloudflared-laravel:
-        #     image: cloudflare/cloudflared:latest
-        #     restart: unless-stopped
-        #     command: tunnel --url http://laravel.test:80
-        #     networks:
-        #         - sail
-        #     depends_on:
-        #         - laravel.test
 
     mysql:
         image: 'mysql/mysql-server:8.0'
@@ -101,11 +90,11 @@ services:
 
     laravel.worker:
         build:
-            context: './vendor/laravel/sail/runtimes/8.4'
+            context: './'
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: 'sail-8.4/worker'
+        image: 'seediq-laravel/worker'
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
