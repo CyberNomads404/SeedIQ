@@ -19,19 +19,10 @@ services:
         depends_on:
             - redis
         command: /bin/bash -c "
-            echo 'Aguardando mysql...';
-            for i in \$(seq 1 60); do
-              if bash -c 'cat < /dev/tcp/mysql/3306' >/dev/null 2>&1; then
-                echo 'mysql disponível';
-                break;
-              fi;
-              echo 'mysql indisponível, tentando novamente (\$i/60)';
-              sleep 1;
-            done;
-            php artisan optimize:clear && \
-            php artisan config:cache && \
-            php artisan migrate && \
-            php artisan serve --host=0.0.0.0 --port=80
+              php artisan optimize:clear && \
+              php artisan config:cache && \
+              php artisan migrate && \
+              php artisan serve --host=0.0.0.0 --port=80
           "
         expose:
             - "80"
