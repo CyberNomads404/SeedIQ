@@ -8,6 +8,8 @@ services:
         image: 'seediq-laravel/app'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
+        env_file:
+            - .env
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
@@ -19,10 +21,21 @@ services:
         depends_on:
             - redis
         command: /bin/bash -c "
-              php artisan optimize:clear && \
-              php artisan config:cache && \
-              php artisan migrate && \
-              php artisan serve --host=0.0.0.0 --port=80
+            echo 'Aguardando banco em $DB_HOST:$DB_PORT ...';
+            for i in \$(seq 1 120); do
+              if bash -c 'cat < /dev/tcp/$DB_HOST/$DB_PORT' >/dev/null 2>&1; then
+                echo 'DB disponível';
+                break;
+              fi;
+              echo 'DB indisponível, tentando novamente (\$i/120)';
+              sleep 1;
+            done;
+            echo 'Executando migrations...';
+            php artisan migrate --force || (php artisan cache:table && php artisan session:table && php artisan migrate --force) || { echo 'migrate falhou'; exit 1; }
+            echo 'Clear/optimize...';
+            php artisan optimize:clear || true;
+            php artisan config:cache || true;
+            php artisan serve --host=0.0.0.0 --port=80
           "
         expose:
             - "80"
