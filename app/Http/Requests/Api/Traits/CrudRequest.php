@@ -6,6 +6,7 @@ use App\Http\Controllers\Traits\ExceptionResponse;
 use App\Http\Requests\Api\Traits\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Log;
 
 abstract class CrudRequest extends FormRequest
 {
@@ -58,6 +59,10 @@ abstract class CrudRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
+        Log::error('Validation failed', [
+            'errors' => $validator->errors(),
+            'input' => $this->all(),
+        ]);
         throw new HttpResponseException(
             $this->responseMessage('error', $validator->errors()->first(), 422, [
                 'error' => $validator->errors(),
