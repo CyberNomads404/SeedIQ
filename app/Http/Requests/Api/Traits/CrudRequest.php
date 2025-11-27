@@ -6,7 +6,7 @@ use App\Http\Controllers\Traits\ExceptionResponse;
 use App\Http\Requests\Api\Traits\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 abstract class CrudRequest extends FormRequest
 {
