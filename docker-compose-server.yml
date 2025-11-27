@@ -14,17 +14,12 @@ services:
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
-        volumes:
-            - '.:/var/www/html'
         networks:
             - sail
         depends_on:
             - mysql
             - redis
         command: /bin/bash -c "
-                composer install &&
-                npm install &&
-                npm run build &&
                 php artisan optimize:clear &&
                 php artisan config:cache &&
                 php artisan serve --host=0.0.0.0 --port=80
@@ -101,8 +96,6 @@ services:
             QUEUE_CONNECTION: '${QUEUE_CONNECTION:-redis}'
             API_SERVICE_HOST: '${API_SERVICE_HOST:-laravel.test}'
             API_SERVICE_PORT: '${API_SERVICE_PORT:-80}'
-        volumes:
-            - '.:/var/www/html'
         networks:
             - sail
         depends_on:
