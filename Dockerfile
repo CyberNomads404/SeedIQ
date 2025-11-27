@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip \
+    # instala extensões PHP necessárias (inclui pdo_mysql)
+    && docker-php-ext-install gd zip pdo_mysql mysqli mbstring \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
