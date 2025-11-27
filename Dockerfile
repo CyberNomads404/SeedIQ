@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     build-essential \
+    pkg-config \
+    libonig-dev \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
