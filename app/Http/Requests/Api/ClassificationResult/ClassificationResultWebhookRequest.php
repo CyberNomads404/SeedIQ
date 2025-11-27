@@ -54,8 +54,8 @@ class ClassificationResultWebhookRequest extends CrudRequest
             'data.payload' => ['required', 'array'],
             'data.payload.external_id' => ['required', 'string'],
             'data.payload.*' => ['sometimes'],
-            'data.result' => ['required', 'array'],
-            'data.result.*' => ['sometimes'],
+            'data.result' => ['nullable', 'array'],
+            'data.result.*' => ['sometimes', 'nullable'],
         ];
     }
 }
