@@ -20,13 +20,13 @@ Plataforma web de gestão e API central do ecossistema SeedIQ. Orquestra a comun
 |-----------|------------------------|
 | <img width="1615" height="826" alt="image (9)" src="https://github.com/user-attachments/assets/9adcde56-c005-4f97-963f-f5144f0365f0" /> | <img width="1901" height="911" alt="Captura de tela de 2026-04-13 23-04-45" src="https://github.com/user-attachments/assets/78df2b30-4822-4f6b-87fe-8f346d438497" /> |
 
-| Resultado da Análise | Perfil do Usuário |
+| Lista de Categorias | Perfil do Usuário |
 |----------------------|------------------|
-| <img width="1917" height="913" alt="Captura de tela de 2026-04-13 23-10-44" src="https://github.com/user-attachments/assets/c7d839dd-237d-41e7-ad15-de02d61303aa" /> | <img width="1917" height="913" alt="Captura de tela de 2026-04-13 23-11-21" src="https://github.com/user-attachments/assets/fdf79deb-6544-4787-8481-dad965e4db2b" /> |
+| <img width="1901" height="911" alt="Captura de tela de 2026-04-13 23-04-38" src="https://github.com/user-attachments/assets/4142c2d2-bc5a-4c48-a2fc-a9a35ec5dc90" /> | <img width="1917" height="913" alt="Captura de tela de 2026-04-13 23-11-21" src="https://github.com/user-attachments/assets/fdf79deb-6544-4787-8481-dad965e4db2b" /> |
 
-| Lista de Categorias |
+| Resultado da Análise  |
 |---------------------|
-| <img width="1901" height="911" alt="Captura de tela de 2026-04-13 23-04-38" src="https://github.com/user-attachments/assets/4142c2d2-bc5a-4c48-a2fc-a9a35ec5dc90" /> |
+| <img width="618" height="740" alt="Captura de tela de 2026-04-14 00-51-10" src="https://github.com/user-attachments/assets/6c83be7f-258b-4327-ab07-46d4aa7b0d72" /> |
 
 ---
 
