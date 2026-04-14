@@ -1,137 +1,154 @@
-# 🚜✨ SeedIQ App — Plataforma de Análise de Grãos
+<div align="center">
 
-SeedIQ é uma plataforma modular e animada para classificação e análise de grãos (milho, soja, etc.). O objetivo deste repositório é prover o painel administrativo central e a API central — responsáveis por orquestrar integrações entre o painel, a API de classificação (serviço que processa imagens) e o aplicativo móvel do operador em campo.
+# 🌱 SeedIQ — Painel + API Central
 
-Este projeto compõe o MVP dividido em 3 partes integradas:
+Plataforma web de gestão e API central do ecossistema SeedIQ. Orquestra a comunicação entre o app mobile, o serviço de classificação por visão computacional e o painel administrativo.
 
-- 🖥️ Painel Web (este repositório) — aplicação React (Inertia + Laravel) para gerenciamento, visualização de classificações, usuários e monitoramento.
-- 🔗 API Central (backend neste repositório em `app/`) — endpoints REST/JSON que servem o painel e o app móvel; autenticação, armazenamento e registros de classificação.
-- 🧠 Serviço de Classificação (repositório separado) — API especializada em processamento de imagens e visão computacional que analisa imagens submetidas e retorna resultados (podendo ser local ou em nuvem).
-- 📱 Aplicativo Móvel (repositório separado) — interface para operadores em campo (envio de imagens, visualização de resultados e histórico).
+![PHP](https://img.shields.io/badge/PHP_8.x-777BB4?style=flat&logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=flat&logo=laravel&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
 
-Visão resumida do objetivo:
+</div>
 
-> Desenvolver uma solução móvel e web que auxilie na classificação de grãos por imagem, integrando análise automática (CV) com um painel administrativo para controle e monitoramento.
+---
 
-## 📦 O que há neste repositório
+## 📸 Preview
 
-- 🗂️ `app/` — backend Laravel com modelos, controllers, jobs e serviços. Contém a API central e o suporte ao painel Inertia.
-- 🎛️ `resources/js/` — frontend React + Inertia (componentes, páginas e layouts do painel administrativo).
-- 🗄️ `database/` — migrations e seeders.
-- 🐳 `docker/` — imagens e configuração de containers (apache/nginx/php etc.).
-- 🛣️ `routes/` — rotas web e api organizadas.
+| Dashboard | Lista de Classificações |
+|-----------|------------------------|
+| <img width="1615" height="826" alt="image (9)" src="https://github.com/user-attachments/assets/9adcde56-c005-4f97-963f-f5144f0365f0" /> | <img width="1901" height="911" alt="Captura de tela de 2026-04-13 23-04-45" src="https://github.com/user-attachments/assets/78df2b30-4822-4f6b-87fe-8f346d438497" /> |
 
-## ⚙️ Principais tecnologias
+| Resultado da Análise | Perfil do Usuário |
+|----------------------|------------------|
+| <img width="1917" height="913" alt="Captura de tela de 2026-04-13 23-10-44" src="https://github.com/user-attachments/assets/c7d839dd-237d-41e7-ad15-de02d61303aa" /> | <img width="1917" height="913" alt="Captura de tela de 2026-04-13 23-11-21" src="https://github.com/user-attachments/assets/fdf79deb-6544-4787-8481-dad965e4db2b" /> |
 
-- Backend: PHP 8.x, Laravel
-- Frontend: React + Inertia, Vite
-- Banco: MySQL / Postgres (configurável via env)
-- Orquestração: Docker / Docker Compose (opções com Sail)
-- Processamento de imagens: serviço externo (repositório separado) que se comunica via API
+| Lista de Categorias |
+|---------------------|
+| <img width="1901" height="911" alt="Captura de tela de 2026-04-13 23-04-38" src="https://github.com/user-attachments/assets/4142c2d2-bc5a-4c48-a2fc-a9a35ec5dc90" /> |
 
-## 🚀 Quickstart — desenvolvimento local
+---
 
-Pré-requisitos:
+## 📌 Sobre o projeto
 
-- 🐳 Docker & Docker Compose (ou Laravel Sail)
-- 🔧 Node.js (para desenvolvimento frontend) — se preferir rodar fora do container
+O SeedIQ é um projeto acadêmico desenvolvido no último semestre do curso de Sistemas de Informação (2025.2), integrando três disciplinas: Programação para Dispositivos Móveis, Segurança e Auditoria de Sistemas e Computação Gráfica e Processamento de Imagens.
 
-Passos rápidos (modo recomendado com Sail/docker):
+Este repositório contém o **Painel Administrativo** (React + Inertia.js) e a **API Central** (Laravel), responsáveis por orquestrar todo o ecossistema:
+
+- Receber imagens enviadas pelo app mobile
+- Enfileirar jobs para o serviço de classificação via webhook
+- Persistir e servir os resultados
+- Prover gestão de usuários, permissões e auditoria
+
+O ecossistema completo é dividido em três repositórios:
+
+| Parte | Repositório | Descrição |
+|-------|-------------|-----------|
+| 🖥️ Painel + API Central | este repositório | Gestão, dashboard e orquestração |
+| 🔬 API de Classificação | [SeedIQ-AI](https://github.com/CyberNomads404/SeedIQ-AI) | Visão computacional com Python + OpenCV |
+| 📱 App Mobile | [seediq_app](https://github.com/CyberNomads404/seediq_app) | App Flutter para operadores em campo |
+
+---
+
+## ⚙️ Tecnologias
+
+- **Backend:** PHP 8.x, Laravel
+- **Frontend:** React + Inertia.js, Vite
+- **Banco de dados:** MySQL / PostgreSQL
+- **Orquestração:** Docker + Docker Compose (Laravel Sail)
+- **Armazenamento:** Supabase / S3
+
+---
+
+## 🔒 Segurança
+
+O projeto segue práticas de Secure SDLC com:
+
+- Controle de acesso baseado em papéis (RBAC) — Operador, Administrador e Suporte
+- Modelagem de ameaças com STRIDE
+- Conformidade com a LGPD
+- Rate limiting nos endpoints
+- Validação de tipo MIME em uploads
+- Bcrypt para senhas
+- Trilhas de auditoria completas com registro de IP, evento e timestamp
+
+---
+
+## 🔁 Fluxo de funcionamento
+
+<img width="1471" height="904" alt="Diagrama Caso de Uso drawio" src="https://github.com/user-attachments/assets/fbf5b2c4-4a89-44e7-aa84-40ef4beec9dc" />
+
+```
+┌─────────────┐        ┌─────────────────┐        ┌──────────────────────┐
+│  App Mobile │───────▶│   API Central   │───────▶│  API Classificação   │
+│  (Flutter)  │        │    (Laravel)    │        │  (Python + OpenCV)   │
+└─────────────┘        └────────┬────────┘        └──────────┬───────────┘
+                                │         ◀─ webhook ────────┘
+                                │
+                       ┌────────▼────────┐
+                       │     Painel      │
+                       │  Administrativo │
+                       │  (React+Inertia)│
+                       └─────────────────┘
+```
+
+1. Operador captura foto no app e envia para a API Central
+2. API Central persiste os metadados e enfileira o job para o serviço de classificação
+3. Serviço de classificação processa a imagem e retorna o resultado via webhook
+4. API Central grava o resultado e disponibiliza para o painel e o app
+5. Painel exibe resultados, estatísticas e permite reanálises
+
+---
+
+## 🚀 Rodando localmente
+
+Pré-requisitos: Docker e Docker Compose
 
 ```bash
-# 1. Clonar repositório
-git clone <SEU_REPO> seediq
-cd seediq
+# 1. Clonar o repositório
+git clone https://github.com/CyberNomads404/SeedIQ.git
+cd SeedIQ
 
-# 2. Executar script de setup (configura .env, dependências básicas)
+# 2. Executar o script de setup
 ./dev-setup.sh
 
-# 3. Subir containers
+# 3. Subir os containers
 ./vendor/bin/sail up -d
 
-# 4. Instalar dependências PHP (se necessário dentro do container)
+# 4. Instalar dependências PHP
 ./vendor/bin/sail composer install
 
 # 5. Rodar migrations e seeders
 ./vendor/bin/sail artisan migrate --seed
 
-# 6. Instalar dependências JS e rodar front-end (dentro do workspace ou container)
+# 6. Instalar dependências JS e rodar o frontend
 ./vendor/bin/sail npm install --prefix resources
 ./vendor/bin/sail npm run dev --prefix resources
-
-# Acesse: http://localhost (ou porta configurada)
 ```
 
-Observações:
-- Se preferir rodar o frontend localmente (fora do container), rode `npm install` e `npm run dev` dentro de `resources/`.
-- As rotas principais do painel usam Inertia; para chamadas externas (app móvel) utilize as rotas da API descritas em `routes/api/...`.
-
-## Rotas e endpoints principais
-
-- Web/painel: rotas em `routes/web/classifications.php` (Inertia)
-- API central: rotas em `routes/api/classifications.php` — endpoints para criação/consulta/reanálise de classificações
-- Webhooks / classificação: rotas em `routes/webhook/analyze` (integração com serviço de classificação)
-
-> Nota: para detalhes das rotas, verifique os arquivos dentro da pasta `routes/`.
-
-## Fluxo de trabalho (alto nível)
-
-1. Operador no app móvel captura foto da amostra e envia para a API central.
-2. API central persiste metadados e envia job para o Serviço de Classificação (via fila ou webhook).
-3. Serviço de Classificação processa a imagem e retorna resultado (payload com contagens por classe: good, small, burned, bad_detection, etc.).
-4. API central grava o resultado em `classification_results` e notifica painel (e/ou envia webhook ao app).
-5. Painel exibe resultado, estatísticas e permite reanálises ou feedbacks manuais.
-
-## Desenvolvimento do frontend
-
-- Estrutura: `resources/js/pages` contém as páginas do painel. Componentes UI reutilizáveis estão em `resources/js/components/ui`.
-- Comandos úteis (rodando dentro do container com Sail):
-
-```bash
-./vendor/bin/sail npm run dev --prefix resources
-./vendor/bin/sail npm run build --prefix resources
-```
-
-## Execução de testes
-
-PHP (Laravel):
-
-```bash
-./vendor/bin/sail artisan test
-```
-
-Javascript (se houver testes configurados):
-
-```bash
-./vendor/bin/sail npm run test --prefix resources
-```
-
-## Observações sobre integrações externas
-
-- Serviço de Classificação: este repositório não contém a engine de visão computacional — ela vive em outro repositório/serviço. A comunicação ocorre via API (webhook ou requisição HTTP). Garanta chaves/rotas configuradas em `config/webhook.php` e variáveis de ambiente.
-- Aplicativo móvel: também está em outro repositório; use a API central deste projeto para autenticação, envio de imagens e consulta de resultados.
-
-## Boas práticas e dicas
-
-- Para reduzir ruído em polling (página de detalhe de classificação), o painel usa polling condicional (só enquanto a classificação estiver em progresso) e trata rejeições para evitar erros no console.
-- Resultados da análise podem vir em um payload dentro de `classification_result.payload`; o frontend tenta usar colunas explícitas (good, small, burned, etc.) e, se nulas, faz fallback para `payload.data.result`.
-
-## Estrutura de pastas (resumo)
-
-- `app/` — Laravel backend (Models, Controllers, Jobs)
-- `resources/js/` — Frontend React + Inertia
-- `database/` — Migrations e Seeders
-- `routes/` — Rotas web/api/webhook
-- `docker/` — Configs de container
-
-## Contribuição
-
-1. Abra uma issue descrevendo a mudança/bug
-2. Crie uma branch a partir de `develop`
-3. Faça PR com descrição e testes quando aplicável
-
-## Contato
-
-Para dúvidas e integrações: pedro.henrique.martins404@gmail.com
+Acesse em: `http://localhost`
 
 ---
+
+## 📖 Documentação da API
+
+A documentação completa dos endpoints está disponível no Postman:
+
+👉 [Acessar documentação](https://documenter.getpostman.com/view/44409413/2sB3QGuXTn)
+
+---
+
+## 👥 Equipe
+
+Desenvolvido pela equipe **CyberNomads404** como Projeto Integrador do curso de Sistemas de Informação — 2025.2
+
+- [@Erikli999](https://github.com/Erikli999) – Erikli999
+- [@piedro404](https://github.com/piedro404) – Pedro Henrique Martins Borges
+- [@thayna-bezerra](https://github.com/thayna-bezerra) – Thayna Bezerra
+
+---
+
+## 📬 Contato
+
+pedro.henrique.martins404@gmail.com
